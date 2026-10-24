@@ -388,7 +388,7 @@ body.drag { cursor: grabbing; }
     <span class="mem-label">photo</span>
     <div id="memory-drop">
       <input type="file" id="memory-file" accept="image/*">
-      <div id="memory-drop-text">click or drag a photo here</div>
+      <div id="memory-drop-text">paste, drag, or click to add a photo</div>
     </div>
     <span class="mem-label mem-caption-label">write-up</span>
     <textarea id="memory-caption" placeholder="what was this moment? where were you, how did it feel…" rows="4"></textarea>
@@ -776,6 +776,34 @@ const loadFile = (file) => {
   };
   reader.readAsDataURL(file);
 };
+
+// Paste image anywhere on the page
+document.addEventListener('paste', e => {
+  const items = e.clipboardData?.items;
+  if (!items) return;
+  for (const item of items) {
+    if (item.type.startsWith('image/')) {
+      const file = item.getAsFile();
+      if (!file) continue;
+      // Open modal if not already open
+      if (!memModal.classList.contains('open')) {
+        memCaption.value = '';
+        memDrop.innerHTML = '';
+        const inp = document.createElement('input');
+        inp.type = 'file'; inp.accept = 'image/*'; inp.style.display = 'none';
+        inp.addEventListener('change', () => { if (inp.files[0]) loadFile(inp.files[0]); });
+        memDrop.appendChild(inp);
+        const txt = document.createElement('div');
+        txt.id = 'memory-drop-text'; txt.textContent = 'click or drag a photo here';
+        memDrop.appendChild(txt);
+        memModal.classList.add('open');
+      }
+      loadFile(file);
+      memCaption.focus();
+      break;
+    }
+  }
+});
 
 document.getElementById('memory-submit').addEventListener('click', () => {
   if (!memDataUrl) return;
