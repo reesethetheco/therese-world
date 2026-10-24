@@ -167,48 +167,48 @@ body.drag { cursor: grabbing; }
 @media (prefers-reduced-motion: reduce) { .book, .polaroid, .note, .doodle { animation: none; } }
 #ui {
   position: fixed; inset: 0; pointer-events: none; z-index: 200;
-  padding: max(22px, env(safe-area-inset-top, 0px)) max(22px, env(safe-area-inset-right, 0px))
-           max(22px, env(safe-area-inset-bottom, 0px)) max(22px, env(safe-area-inset-left, 0px));
+  padding: max(14px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px))
+           max(14px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
 }
-#ui-top { display: flex; align-items: flex-start; justify-content: space-between; }
+#ui-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 #wordmark {
-  font-family: var(--ff-d); font-style: italic; font-size: 22px;
-  font-weight: 400; color: var(--fg); opacity: .5; letter-spacing: .01em;
+  font-family: var(--ff-d); font-style: italic; font-size: 17px;
+  font-weight: 400; color: var(--fg); opacity: .45; letter-spacing: .01em; white-space: nowrap;
 }
-#nav { display: flex; gap: 8px; pointer-events: all; flex-wrap: wrap; justify-content: flex-end; }
+#nav { display: flex; gap: 5px; pointer-events: all; flex-wrap: wrap; justify-content: flex-end; }
 .pill {
-  font-family: var(--ff-b); font-size: 10.5px; font-weight: 400; letter-spacing: .1em;
-  text-transform: uppercase; padding: 7px 16px; background: transparent; color: var(--fg);
-  border: 1px solid var(--fg-soft); border-radius: 100px; cursor: pointer; opacity: .5;
+  font-family: var(--ff-b); font-size: 9.5px; font-weight: 400; letter-spacing: .09em;
+  text-transform: uppercase; padding: 5px 12px; background: transparent; color: var(--fg);
+  border: 1px solid var(--fg-soft); border-radius: 100px; cursor: pointer; opacity: .45;
   transition: opacity .2s, background .2s, color .2s;
 }
 .pill:hover { opacity: 1; background: var(--fg); color: var(--cream); border-color: var(--fg); }
 #hint {
-  position: absolute; bottom: max(22px, env(safe-area-inset-bottom, 0px));
-  left: 50%; transform: translateX(-50%); font-family: var(--ff-b); font-size: 10px;
-  letter-spacing: .14em; text-transform: uppercase; color: var(--fg-soft); opacity: .45; white-space: nowrap;
+  position: absolute; bottom: max(14px, env(safe-area-inset-bottom, 0px));
+  left: 50%; transform: translateX(-50%); font-family: var(--ff-b); font-size: 9px;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--fg-soft); opacity: .35; white-space: nowrap;
 }
 #zoom-controls {
-  position: absolute; bottom: max(22px, env(safe-area-inset-bottom, 0px));
-  right: max(22px, env(safe-area-inset-right, 0px));
-  display: flex; gap: 6px; pointer-events: all;
+  position: absolute; bottom: max(14px, env(safe-area-inset-bottom, 0px));
+  right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; gap: 5px; pointer-events: all;
 }
 .zoom-btn {
-  width: 34px; height: 34px; border-radius: 50%; background: transparent;
-  border: 1px solid var(--fg-soft); color: var(--fg); font-size: 18px; font-weight: 300;
+  width: 28px; height: 28px; border-radius: 50%; background: transparent;
+  border: 1px solid var(--fg-soft); color: var(--fg); font-size: 16px; font-weight: 300;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
-  opacity: .45; transition: opacity .2s, background .2s, color .2s; line-height: 1;
+  opacity: .4; transition: opacity .2s, background .2s, color .2s; line-height: 1;
 }
 .zoom-btn:hover { opacity: 1; background: var(--fg); color: var(--cream); border-color: var(--fg); }
 /* Add memory button */
 #add-btn {
-  position: absolute; bottom: max(22px, env(safe-area-inset-bottom, 0px));
-  left: max(22px, env(safe-area-inset-left, 0px));
-  width: 38px; height: 38px; border-radius: 50%;
+  position: absolute; bottom: max(14px, env(safe-area-inset-bottom, 0px));
+  left: max(16px, env(safe-area-inset-left, 0px));
+  width: 30px; height: 30px; border-radius: 50%;
   background: transparent; border: 1px solid var(--fg-soft); color: var(--fg);
-  font-size: 22px; font-weight: 300; cursor: pointer; pointer-events: all;
+  font-size: 18px; font-weight: 300; cursor: pointer; pointer-events: all;
   display: flex; align-items: center; justify-content: center;
-  opacity: .45; transition: opacity .2s, background .2s, color .2s; line-height: 1;
+  opacity: .4; transition: opacity .2s, background .2s, color .2s; line-height: 1;
 }
 #add-btn:hover { opacity: 1; background: var(--fg); color: var(--cream); border-color: var(--fg); }
 /* Add memory modal */
@@ -372,49 +372,69 @@ body.drag { cursor: grabbing; }
   color: var(--fg-soft); opacity: .5; margin-top: 14px;
 }
 
+/* Resume card */
+.resume-card {
+  background: var(--white); border-radius: 3px; padding: 28px 32px 24px;
+  box-shadow: 3px 5px 28px rgba(34,22,8,.10);
+  display: flex; flex-direction: column; gap: 6px; width: 240px;
+  animation: bob 8s ease-in-out infinite;
+  cursor: pointer; text-decoration: none;
+  transition: box-shadow .25s ease, transform .25s ease;
+}
+.resume-card:hover {
+  box-shadow: 6px 12px 48px rgba(34,22,8,.18);
+  transform: translateY(-4px);
+}
+.resume-card-name {
+  font-family: var(--ff-d); font-style: italic; font-size: 20px;
+  color: var(--fg); line-height: 1.2;
+}
+.resume-card-role {
+  font-family: var(--ff-b); font-size: 9.5px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--fg-soft); margin-top: 2px;
+}
+.resume-card-rule { width: 20px; height: 1px; background: var(--terra); margin: 10px 0; }
+.resume-card-cta {
+  font-family: var(--ff-b); font-size: 9.5px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--terra); opacity: .8;
+  display: flex; align-items: center; gap: 5px;
+}
+
 /* ── Mobile ─────────────────────────────────────────── */
 @media (max-width: 640px) {
-  /* UI overlay padding */
-  #ui {
-    padding: max(14px, env(safe-area-inset-top, 0px)) max(14px, env(safe-area-inset-right, 0px))
-             max(14px, env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-left, 0px));
+  /* Single-row compact header */
+  #ui-top { flex-direction: row; align-items: center; gap: 8px; }
+  #wordmark { font-size: 14px; opacity: .4; flex-shrink: 0; }
+
+  /* Pills: horizontal scroll row, no wrap */
+  #nav {
+    flex-wrap: nowrap; overflow-x: auto; gap: 4px;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
   }
+  #nav::-webkit-scrollbar { display: none; }
+  .pill { font-size: 8.5px; padding: 5px 10px; white-space: nowrap; flex-shrink: 0; min-height: 28px; }
 
-  /* Top bar: wordmark above nav pills */
-  #ui-top { flex-direction: column; align-items: flex-start; gap: 8px; }
-  #wordmark { font-size: 18px; }
+  /* Bottom controls: bigger tap targets on touch */
+  .zoom-btn { width: 34px; height: 34px; font-size: 18px; }
+  #add-btn  { width: 34px; height: 34px; font-size: 18px; }
 
-  /* Nav pills: left-aligned, wrap, bigger tap area */
-  #nav { justify-content: flex-start; gap: 5px; max-width: 100%; }
-  .pill {
-    font-size: 9px; padding: 9px 13px;
-    min-height: 36px; display: inline-flex; align-items: center;
-  }
-
-  /* Zoom + add buttons: slightly bigger tap target */
-  .zoom-btn { width: 40px; height: 40px; font-size: 20px; }
-  #add-btn  { width: 42px; height: 42px; font-size: 24px; }
-
-  /* Hide the drag hint on mobile (obvious on touch) */
+  /* Hide drag hint */
   #hint { display: none; }
 
-  /* Memory upload modal: tighter padding */
-  #memory-modal-inner { padding: 26px 18px 22px; }
-  #memory-drop { height: 110px; }
-
-  /* Photo view modal: stack image above text */
-  #view-modal { padding: 16px; }
+  /* Modals: tighter */
+  #memory-modal { padding: 12px; }
+  #memory-modal-inner { padding: 22px 16px 18px; }
+  #memory-drop { height: 100px; }
+  #view-modal { padding: 12px; }
   #view-modal-inner {
-    flex-direction: column; gap: 18px;
-    padding: 22px 18px 18px;
-    max-height: 88vh; overflow-y: auto;
+    flex-direction: column; gap: 14px;
+    padding: 20px 16px 16px;
+    max-height: 90vh; overflow-y: auto;
   }
-  #view-modal-img { width: 100%; height: auto; max-height: 220px; }
-
-  /* Book modal: tighter padding, smaller title */
-  #book-modal { padding: 16px; }
-  #book-modal-inner { padding: 28px 18px 22px; }
-  #book-modal-title { font-size: 20px; }
+  #view-modal-img { width: 100%; height: auto; max-height: 200px; }
+  #book-modal { padding: 12px; }
+  #book-modal-inner { padding: 24px 16px 20px; }
+  #book-modal-title { font-size: 19px; }
 }
 </style>
 </head>
@@ -428,6 +448,7 @@ body.drag { cursor: grabbing; }
       <button class="pill" data-wx="2080" data-wy="1540">Trips</button>
       <button class="pill" data-wx="900" data-wy="680">Writing</button>
       <button class="pill" data-wx="2800" data-wy="800">Wishlist</button>
+      <button class="pill" data-wx="1400" data-wy="240">Resume</button>
       <button class="pill" data-wx="1600" data-wy="1000">Home</button>
     </div>
   </div>
@@ -557,6 +578,17 @@ body.drag { cursor: grabbing; }
 <div class="book" data-book="wbba" style="--r:-4deg;--dur:6s;--del:0s;--bob:-9px;left:14px;top:56px;"><div class="book-cover" style="--w:86px;--h:132px;background:linear-gradient(170deg,#E0E6EE,#8898AA);"><img class="book-img" src="https://covers.openlibrary.org/b/isbn/9780812988406-L.jpg" alt="When Breath Becomes Air cover" onerror="this.style.display='none'"></div></div>
 <div class="book" data-book="wit" style="--r:5deg;--dur:7.5s;--del:-1.5s;--bob:-7px;left:148px;top:38px;"><div class="book-cover" style="--w:90px;--h:138px;background:linear-gradient(160deg,#1A1A2E,#16213E);"><img class="book-img" src="https://covers.openlibrary.org/b/isbn/9781501158148-L.jpg" alt="What It Takes cover" onerror="this.style.display='none'"></div></div>
 <div class="book" data-book="tus" style="--r:-2deg;--dur:6.5s;--del:-2.5s;--bob:-10px;left:282px;top:62px;"><div class="book-cover" style="--w:84px;--h:128px;background:linear-gradient(165deg,#C8956C,#7B4A2A);"><img class="book-img" src="https://covers.openlibrary.org/b/isbn/9781572245372-L.jpg" alt="The Untethered Soul cover" onerror="this.style.display='none'"></div></div>
+</div>
+
+<!-- Resume -->
+<div class="section-group" style="left:1280px;top:200px;">
+<div class="sec" style="left:0;top:0;">resume</div>
+<a class="resume-card" href="https://www.linkedin.com/in/thereseangangco/" target="_blank" rel="noopener" style="left:0;top:36px;position:absolute;">
+  <div class="resume-card-name">Therese Angangco</div>
+  <div class="resume-card-role">Product · Strategy · Design</div>
+  <div class="resume-card-rule"></div>
+  <div class="resume-card-cta">View on LinkedIn <span>↗</span></div>
+</a>
 </div>
 
 <!-- Writing -->
