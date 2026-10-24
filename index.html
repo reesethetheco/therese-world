@@ -400,6 +400,75 @@ body.drag { cursor: grabbing; }
   display: flex; align-items: center; gap: 5px;
 }
 
+/* Life section cards */
+.life-card {
+  position: absolute; background: var(--white); border-radius: 3px;
+  padding: 26px 28px 22px; width: 220px;
+  box-shadow: 3px 5px 24px rgba(34,22,8,.09);
+  cursor: pointer; pointer-events: all;
+  animation: bob var(--dur,8s) ease-in-out infinite var(--del,0s);
+  transition: box-shadow .25s ease, transform .25s ease;
+}
+.life-card:hover {
+  box-shadow: 6px 14px 44px rgba(34,22,8,.17);
+  transform: translateY(-5px) rotate(var(--r,0deg));
+}
+.life-card-emoji { font-size: 22px; margin-bottom: 10px; display: block; }
+.life-card-title {
+  font-family: var(--ff-d); font-style: italic; font-size: 19px;
+  font-weight: 400; color: var(--fg); line-height: 1.2; margin-bottom: 6px;
+}
+.life-card-preview {
+  font-family: var(--ff-b); font-size: 12px; line-height: 1.6;
+  color: var(--fg-soft); display: -webkit-box; -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical; overflow: hidden;
+}
+.life-card-cta {
+  font-family: var(--ff-b); font-size: 9px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--terra); margin-top: 12px;
+  opacity: .7;
+}
+
+/* Life / journal modal */
+#life-modal {
+  position: fixed; inset: 0; z-index: 500; display: none; align-items: center; justify-content: center;
+  background: rgba(34,22,8,.45); backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
+  padding: 24px;
+}
+#life-modal.open { display: flex; }
+#life-modal-inner {
+  background: var(--cream); border-radius: 4px; max-width: 580px; width: 100%;
+  padding: 44px 48px 40px; position: relative;
+  box-shadow: 0 32px 80px rgba(34,22,8,.28);
+  animation: modal-in .3s cubic-bezier(.2,.8,.4,1);
+  max-height: 85vh; overflow-y: auto;
+}
+#life-modal-close {
+  position: absolute; top: 16px; right: 18px; background: none; border: none;
+  font-size: 22px; cursor: pointer; color: var(--fg-soft); opacity: .5; line-height: 1;
+  transition: opacity .2s;
+}
+#life-modal-close:hover { opacity: 1; }
+#life-modal-emoji { font-size: 28px; margin-bottom: 12px; display: block; }
+#life-modal-title {
+  font-family: var(--ff-d); font-style: italic; font-size: 30px;
+  font-weight: 400; color: var(--fg); margin-bottom: 4px; line-height: 1.15;
+}
+#life-modal-rule { width: 24px; height: 1px; background: var(--terra); margin: 16px 0 20px; }
+#life-modal-body {
+  font-family: var(--ff-b); font-size: 15px; line-height: 1.85; color: var(--fg-mid);
+  min-height: 160px; outline: none; white-space: pre-wrap;
+  border-bottom: 1px solid transparent; transition: border-color .2s;
+}
+#life-modal-body:focus { border-color: var(--parch); }
+#life-modal-body:empty::before {
+  content: attr(data-placeholder); color: var(--fg-soft); opacity: .5; pointer-events: none;
+}
+#life-modal-hint {
+  font-family: var(--ff-b); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--fg-soft); opacity: .4; margin-top: 14px;
+}
+
 /* ── Mobile ─────────────────────────────────────────── */
 @media (max-width: 640px) {
   /* Single-row compact header */
@@ -435,6 +504,9 @@ body.drag { cursor: grabbing; }
   #book-modal { padding: 12px; }
   #book-modal-inner { padding: 24px 16px 20px; }
   #book-modal-title { font-size: 19px; }
+  #life-modal { padding: 12px; }
+  #life-modal-inner { padding: 28px 18px 22px; }
+  #life-modal-title { font-size: 24px; }
 }
 </style>
 </head>
@@ -449,6 +521,7 @@ body.drag { cursor: grabbing; }
       <button class="pill" data-wx="900" data-wy="680">Writing</button>
       <button class="pill" data-wx="2800" data-wy="800">Wishlist</button>
       <button class="pill" data-wx="1400" data-wy="240">Resume</button>
+      <button class="pill" data-wx="3500" data-wy="340">Life</button>
       <button class="pill" data-wx="1600" data-wy="1000">Home</button>
     </div>
   </div>
@@ -499,6 +572,18 @@ body.drag { cursor: grabbing; }
     <div id="book-modal-rule"></div>
     <div id="book-modal-review" contenteditable="true" spellcheck="false"></div>
     <div id="book-modal-edit-hint">click to edit your review</div>
+  </div>
+</div>
+
+<!-- Life journal modal -->
+<div id="life-modal">
+  <div id="life-modal-inner">
+    <button id="life-modal-close">×</button>
+    <span id="life-modal-emoji"></span>
+    <div id="life-modal-title"></div>
+    <div id="life-modal-rule"></div>
+    <div id="life-modal-body" contenteditable="true" spellcheck="false" data-placeholder="Write your thoughts here…"></div>
+    <div id="life-modal-hint">click to edit · auto-saved</div>
   </div>
 </div>
 
@@ -591,6 +676,29 @@ body.drag { cursor: grabbing; }
 </a>
 </div>
 
+<!-- Life sections -->
+<div class="section-group" style="left:3360px;top:280px;">
+<div class="sec" style="left:0;top:0;">life chapters</div>
+<div class="life-card" data-life="mba" style="--r:-3deg;--dur:9s;--del:0s;left:0;top:40px;transform:rotate(-3deg);">
+  <span class="life-card-emoji">🎓</span>
+  <div class="life-card-title">The MBA</div>
+  <div class="life-card-preview" id="life-preview-mba">What I learned, why I went, and what surprised me.</div>
+  <div class="life-card-cta">read more →</div>
+</div>
+<div class="life-card" data-life="wedding" style="--r:4deg;--dur:8s;--del:-2s;left:256px;top:20px;transform:rotate(4deg);">
+  <span class="life-card-emoji">💍</span>
+  <div class="life-card-title">My Wedding</div>
+  <div class="life-card-preview" id="life-preview-wedding">The story, the day, the little moments I want to remember.</div>
+  <div class="life-card-cta">read more →</div>
+</div>
+<div class="life-card" data-life="finance" style="--r:-2deg;--dur:10s;--del:-4s;left:128px;top:280px;transform:rotate(-2deg);">
+  <span class="life-card-emoji">📈</span>
+  <div class="life-card-title">Finance</div>
+  <div class="life-card-preview" id="life-preview-finance">How I think about money, what I'm learning, and where I'm going.</div>
+  <div class="life-card-cta">read more →</div>
+</div>
+</div>
+
 <!-- Writing -->
 <div class="section-group" style="left:660px;top:560px;">
 <div class="sec" style="left:0;top:0;">writing</div>
@@ -671,7 +779,7 @@ set();
 
 // Pan — mouse
 body.addEventListener('mousedown', e => {
-  if (e.target.closest('.pill,.zoom-btn,#book-modal')) return;
+  if (e.target.closest('.pill,.zoom-btn,#book-modal,.life-card,#life-modal')) return;
   on = true; mx = e.clientX; my = e.clientY; sx = tx; sy = ty;
   body.classList.add('drag');
 });
@@ -684,7 +792,7 @@ document.addEventListener('mouseup', () => { on = false; body.classList.remove('
 // Pan — touch (single finger)
 let pinchDist0 = 0, pinchScale0 = 1, pinchTx0 = 0, pinchTy0 = 0;
 body.addEventListener('touchstart', e => {
-  if (e.target.closest('.pill,#book-modal')) return;
+  if (e.target.closest('.pill,#book-modal,.life-card,#life-modal')) return;
   if (e.touches.length === 2) {
     const a = e.touches[0], b = e.touches[1];
     pinchDist0 = Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
@@ -984,6 +1092,67 @@ document.querySelectorAll('.book[data-book]').forEach(el => {
 
 document.getElementById('book-modal-close').addEventListener('click', closeBook);
 modal.addEventListener('click', e => { if (e.target === modal) closeBook(); });
+
+// ── Life / journal sections ───────────────────────────
+const LIFE_SECTIONS = {
+  mba:     { emoji: '🎓', title: 'The MBA' },
+  wedding: { emoji: '💍', title: 'My Wedding' },
+  finance: { emoji: '📈', title: 'Finance' },
+};
+
+const lifeModal      = document.getElementById('life-modal');
+const lifeEmoji      = document.getElementById('life-modal-emoji');
+const lifeTitle      = document.getElementById('life-modal-title');
+const lifeBody       = document.getElementById('life-modal-body');
+
+const lifeKey = id => `life_section_${id}`;
+
+const updateLifePreview = id => {
+  const text = localStorage.getItem(lifeKey(id)) || '';
+  const el = document.getElementById(`life-preview-${id}`);
+  if (el && text.trim()) el.textContent = text.trim().slice(0, 120);
+};
+
+Object.keys(LIFE_SECTIONS).forEach(id => updateLifePreview(id));
+
+let currentLifeId = null;
+
+const openLife = id => {
+  const sec = LIFE_SECTIONS[id];
+  currentLifeId = id;
+  lifeEmoji.textContent = sec.emoji;
+  lifeTitle.textContent = sec.title;
+  lifeBody.textContent = localStorage.getItem(lifeKey(id)) || '';
+  lifeModal.classList.add('open');
+  document.body.style.cursor = 'default';
+  setTimeout(() => lifeBody.focus(), 80);
+};
+
+const closeLife = () => {
+  if (currentLifeId) {
+    const text = lifeBody.textContent;
+    localStorage.setItem(lifeKey(currentLifeId), text);
+    updateLifePreview(currentLifeId);
+    currentLifeId = null;
+  }
+  lifeModal.classList.remove('open');
+  document.body.style.cursor = '';
+};
+
+document.querySelectorAll('.life-card').forEach(card => {
+  card.addEventListener('click', e => {
+    e.stopPropagation();
+    openLife(card.dataset.life);
+  });
+});
+
+lifeBody.addEventListener('input', () => {
+  if (currentLifeId) localStorage.setItem(lifeKey(currentLifeId), lifeBody.textContent);
+});
+
+document.getElementById('life-modal-close').addEventListener('click', closeLife);
+lifeModal.addEventListener('click', e => { if (e.target === lifeModal) closeLife(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && lifeModal.classList.contains('open')) closeLife(); });
 </script>
 </body>
 </html>
