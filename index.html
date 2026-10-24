@@ -149,6 +149,67 @@ body.drag { cursor: grabbing; }
   left: 50%; transform: translateX(-50%); font-family: var(--ff-b); font-size: 10px;
   letter-spacing: .14em; text-transform: uppercase; color: var(--fg-soft); opacity: .45; white-space: nowrap;
 }
+#zoom-controls {
+  position: absolute; bottom: max(22px, env(safe-area-inset-bottom, 0px));
+  right: max(22px, env(safe-area-inset-right, 0px));
+  display: flex; gap: 6px; pointer-events: all;
+}
+.zoom-btn {
+  width: 34px; height: 34px; border-radius: 50%; background: transparent;
+  border: 1px solid var(--fg-soft); color: var(--fg); font-size: 18px; font-weight: 300;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  opacity: .45; transition: opacity .2s, background .2s, color .2s; line-height: 1;
+}
+.zoom-btn:hover { opacity: 1; background: var(--fg); color: var(--cream); border-color: var(--fg); }
+/* Book review modal */
+#book-modal {
+  position: fixed; inset: 0; z-index: 500; display: none; align-items: center; justify-content: center;
+  background: rgba(34,22,8,.45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  padding: 24px;
+}
+#book-modal.open { display: flex; }
+#book-modal-inner {
+  background: var(--cream); border-radius: 4px; max-width: 440px; width: 100%;
+  padding: 40px 40px 36px; position: relative;
+  box-shadow: 0 32px 80px rgba(34,22,8,.28);
+  animation: modal-in .3s cubic-bezier(.2,.8,.4,1);
+}
+@keyframes modal-in { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: none; } }
+#book-modal-close {
+  position: absolute; top: 16px; right: 18px; background: none; border: none;
+  font-size: 22px; cursor: pointer; color: var(--fg-soft); opacity: .6; line-height: 1;
+  transition: opacity .2s;
+}
+#book-modal-close:hover { opacity: 1; }
+#book-modal-cover {
+  width: 64px; height: 96px; border-radius: 1px 3px 3px 1px; margin-bottom: 20px;
+  box-shadow: -3px 2px 8px rgba(0,0,0,.28), 3px 4px 16px rgba(34,22,8,.12);
+  position: relative; overflow: hidden; flex-shrink: 0;
+}
+#book-modal-cover::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 10px;
+  background: linear-gradient(to right, rgba(0,0,0,.26), transparent);
+}
+#book-modal-title {
+  font-family: var(--ff-d); font-size: 24px; font-weight: 400; font-style: italic;
+  line-height: 1.2; color: var(--fg); margin-bottom: 4px;
+}
+#book-modal-author {
+  font-family: var(--ff-b); font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--fg-soft); margin-bottom: 20px;
+}
+#book-modal-rule { width: 24px; height: 1px; background: var(--terra); margin-bottom: 18px; }
+#book-modal-review {
+  font-family: var(--ff-b); font-size: 15px; line-height: 1.75; color: var(--fg-mid);
+  white-space: pre-wrap;
+}
+#book-modal-review[contenteditable="true"] {
+  outline: none; border-bottom: 1px solid var(--parch); padding-bottom: 4px;
+}
+#book-modal-edit-hint {
+  font-family: var(--ff-b); font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--fg-soft); opacity: .5; margin-top: 14px;
+}
 </style>
 </head>
 <body>
@@ -162,7 +223,24 @@ body.drag { cursor: grabbing; }
       <button class="pill" data-wx="1600" data-wy="1000">Home</button>
     </div>
   </div>
-  <span id="hint">drag to explore</span>
+  <span id="hint">drag to explore · scroll to zoom</span>
+  <div id="zoom-controls">
+    <button class="zoom-btn" id="zoom-out" aria-label="Zoom out">−</button>
+    <button class="zoom-btn" id="zoom-in" aria-label="Zoom in">+</button>
+  </div>
+</div>
+
+<!-- Book review modal -->
+<div id="book-modal" role="dialog" aria-modal="true">
+  <div id="book-modal-inner">
+    <button id="book-modal-close" aria-label="Close">×</button>
+    <div id="book-modal-cover"></div>
+    <div id="book-modal-title"></div>
+    <div id="book-modal-author"></div>
+    <div id="book-modal-rule"></div>
+    <div id="book-modal-review" contenteditable="true" spellcheck="false"></div>
+    <div id="book-modal-edit-hint">click to edit your review</div>
+  </div>
 </div>
 
 <div id="canvas">
@@ -239,9 +317,9 @@ body.drag { cursor: grabbing; }
 
 <!-- Books -->
 <div class="sec" style="left:200px;top:216px;">books</div>
-<div class="book" style="--r:-4deg;--dur:6s;--del:0s;--bob:-9px;left:214px;top:272px;"><div class="book-cover" style="--w:86px;--h:132px;background:linear-gradient(170deg,#E0E6EE,#8898AA);"><div class="book-line" style="background:rgba(20,40,60,.2);"></div><div class="book-title" style="color:#1A2A38;">When Breath Becomes Air</div><div class="book-author" style="color:rgba(26,42,56,.52);">Paul Kalanithi</div></div></div>
-<div class="book" style="--r:5deg;--dur:7.5s;--del:-1.5s;--bob:-7px;left:348px;top:254px;"><div class="book-cover" style="--w:90px;--h:138px;background:linear-gradient(160deg,#1A1A2E,#16213E);"><div class="book-line"></div><div class="book-title">What It Takes</div><div class="book-author">Stephen Schwarzman</div></div></div>
-<div class="book" style="--r:-2deg;--dur:6.5s;--del:-2.5s;--bob:-10px;left:482px;top:278px;"><div class="book-cover" style="--w:84px;--h:128px;background:linear-gradient(165deg,#C8956C,#7B4A2A);"><div class="book-line"></div><div class="book-title">The Untethered Soul</div><div class="book-author">Michael A. Singer</div></div></div>
+<div class="book" data-book="wbba" style="--r:-4deg;--dur:6s;--del:0s;--bob:-9px;left:214px;top:272px;"><div class="book-cover" style="--w:86px;--h:132px;background:linear-gradient(170deg,#E0E6EE,#8898AA);"><div class="book-line" style="background:rgba(20,40,60,.2);"></div><div class="book-title" style="color:#1A2A38;">When Breath Becomes Air</div><div class="book-author" style="color:rgba(26,42,56,.52);">Paul Kalanithi</div></div></div>
+<div class="book" data-book="wit" style="--r:5deg;--dur:7.5s;--del:-1.5s;--bob:-7px;left:348px;top:254px;"><div class="book-cover" style="--w:90px;--h:138px;background:linear-gradient(160deg,#1A1A2E,#16213E);"><div class="book-line"></div><div class="book-title">What It Takes</div><div class="book-author">Stephen Schwarzman</div></div></div>
+<div class="book" data-book="tus" style="--r:-2deg;--dur:6.5s;--del:-2.5s;--bob:-10px;left:482px;top:278px;"><div class="book-cover" style="--w:84px;--h:128px;background:linear-gradient(165deg,#C8956C,#7B4A2A);"><div class="book-line"></div><div class="book-title">The Untethered Soul</div><div class="book-author">Michael A. Singer</div></div></div>
 
 <!-- Trips -->
 <div class="sec" style="left:1802px;top:1342px;">places</div>
@@ -266,15 +344,6 @@ body.drag { cursor: grabbing; }
   <div class="pol-cap">New York City</div>
 </div>
 
-<!-- Notes -->
-<div class="note" style="--r:-4deg;--dur:8s;--del:0s;--bob:-7px;background:#E8C464;left:922px;top:578px;"><div class="note-text">slow mornings make everything better</div></div>
-<div class="note" style="--r:3deg;--dur:9s;--del:-2s;--bob:-5px;background:#A4C8A0;left:1752px;top:718px;"><div class="note-text">the best conversations happen at 2am</div></div>
-<div class="note" style="--r:-2deg;--dur:7s;--del:-4s;--bob:-8px;background:#E8C464;left:1122px;top:1240px;"><div class="note-text">learning to sit with uncertainty</div></div>
-<div class="note" style="--r:5deg;--dur:10s;--del:-1s;--bob:-6px;background:#A4BEDE;left:2418px;top:942px;"><div class="note-text">beauty lives in the specific, not the general</div></div>
-<div class="note" style="--r:-3deg;--dur:7.5s;--del:-3s;--bob:-9px;background:#E8C464;left:692px;top:930px;"><div class="note-text">every place changes you a little</div></div>
-<div class="note" style="--r:2deg;--dur:8.5s;--del:-5s;--bob:-6px;background:#F0C0B4;left:1898px;top:1122px;"><div class="note-text">it's okay to not know yet</div></div>
-<div class="note" style="--r:-1deg;--dur:9s;--del:-2.5s;--bob:-8px;background:#A4C8A0;left:1342px;top:682px;"><div class="note-text">the world is bigger and stranger than I imagined</div></div>
-<div class="note" style="--r:4deg;--dur:7s;--del:-6s;--bob:-5px;background:#E8C464;left:2698px;top:1298px;"><div class="note-text">reading is the closest thing to telepathy</div></div>
 
 </div>
 </div>
@@ -284,11 +353,19 @@ const world = document.getElementById('world');
 const body = document.body;
 let tx = window.innerWidth / 2 - 1600;
 let ty = window.innerHeight / 2 - 1000;
+let scale = 1;
+const MIN_SCALE = 0.35, MAX_SCALE = 2.2;
 let sx = tx, sy = ty, mx = 0, my = 0, on = false;
-const set = () => world.style.transform = `translate3d(${tx}px,${ty}px,0)`;
+
+const set = () => {
+  world.style.transform = `translate3d(${tx}px,${ty}px,0) scale(${scale})`;
+  world.style.transformOrigin = '0 0';
+};
 set();
+
+// Pan — mouse
 body.addEventListener('mousedown', e => {
-  if (e.target.closest('.pill')) return;
+  if (e.target.closest('.pill,.zoom-btn,#book-modal')) return;
   on = true; mx = e.clientX; my = e.clientY; sx = tx; sy = ty;
   body.classList.add('drag');
 });
@@ -297,18 +374,60 @@ document.addEventListener('mousemove', e => {
   tx = sx + e.clientX - mx; ty = sy + e.clientY - my; set();
 });
 document.addEventListener('mouseup', () => { on = false; body.classList.remove('drag'); });
+
+// Pan — touch (single finger)
+let pinchDist0 = 0, pinchScale0 = 1, pinchTx0 = 0, pinchTy0 = 0;
 body.addEventListener('touchstart', e => {
-  if (e.target.closest('.pill')) return;
-  const t = e.touches[0]; on = true;
-  mx = t.clientX; my = t.clientY; sx = tx; sy = ty;
+  if (e.target.closest('.pill,#book-modal')) return;
+  if (e.touches.length === 2) {
+    const a = e.touches[0], b = e.touches[1];
+    pinchDist0 = Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
+    pinchScale0 = scale; pinchTx0 = tx; pinchTy0 = ty; on = false;
+  } else {
+    const t = e.touches[0]; on = true;
+    mx = t.clientX; my = t.clientY; sx = tx; sy = ty;
+  }
 }, { passive: true });
 body.addEventListener('touchmove', e => {
-  if (!on) return;
-  const t = e.touches[0];
-  tx = sx + t.clientX - mx; ty = sy + t.clientY - my; set();
+  if (e.touches.length === 2) {
+    const a = e.touches[0], b = e.touches[1];
+    const dist = Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
+    const cx = (a.clientX + b.clientX) / 2, cy = (a.clientY + b.clientY) / 2;
+    const ns = Math.min(MAX_SCALE, Math.max(MIN_SCALE, pinchScale0 * dist / pinchDist0));
+    const ratio = ns / pinchScale0;
+    tx = cx - ratio * (cx - pinchTx0); ty = cy - ratio * (cy - pinchTy0);
+    scale = ns; set();
+  } else if (on) {
+    const t = e.touches[0];
+    tx = sx + t.clientX - mx; ty = sy + t.clientY - my; set();
+  }
   e.preventDefault();
 }, { passive: false });
 body.addEventListener('touchend', () => { on = false; });
+
+// Zoom — scroll wheel
+document.getElementById('canvas').addEventListener('wheel', e => {
+  e.preventDefault();
+  const delta = e.deltaY < 0 ? 1.1 : 0.9;
+  const ns = Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale * delta));
+  const ratio = ns / scale;
+  tx = e.clientX - ratio * (e.clientX - tx);
+  ty = e.clientY - ratio * (e.clientY - ty);
+  scale = ns; set();
+}, { passive: false });
+
+// Zoom — buttons
+const applyZoom = (delta, cx, cy) => {
+  cx = cx ?? innerWidth / 2; cy = cy ?? innerHeight / 2;
+  const ns = Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale * delta));
+  const ratio = ns / scale;
+  tx = cx - ratio * (cx - tx); ty = cy - ratio * (cy - ty);
+  scale = ns; set();
+};
+document.getElementById('zoom-in').addEventListener('click', () => applyZoom(1.25));
+document.getElementById('zoom-out').addEventListener('click', () => applyZoom(0.8));
+
+// Nav pills
 document.querySelectorAll('.pill[data-wx]').forEach(btn => {
   btn.addEventListener('click', () => {
     const toTx = innerWidth / 2 - +btn.dataset.wx;
@@ -323,6 +442,67 @@ document.querySelectorAll('.pill[data-wx]').forEach(btn => {
     requestAnimationFrame(step);
   });
 });
+
+// Book reviews (editable, stored in localStorage)
+const BOOKS = {
+  wbba: {
+    title: 'When Breath Becomes Air',
+    author: 'Paul Kalanithi',
+    bg: 'linear-gradient(170deg,#E0E6EE,#8898AA)',
+    defaultReview: 'Add your thoughts on this book…'
+  },
+  wit: {
+    title: 'What It Takes',
+    author: 'Stephen Schwarzman',
+    bg: 'linear-gradient(160deg,#1A1A2E,#16213E)',
+    defaultReview: 'Add your thoughts on this book…'
+  },
+  tus: {
+    title: 'The Untethered Soul',
+    author: 'Michael A. Singer',
+    bg: 'linear-gradient(165deg,#C8956C,#7B4A2A)',
+    defaultReview: 'Add your thoughts on this book…'
+  }
+};
+
+const modal = document.getElementById('book-modal');
+const modalCover = document.getElementById('book-modal-cover');
+const modalTitle = document.getElementById('book-modal-title');
+const modalAuthor = document.getElementById('book-modal-author');
+const modalReview = document.getElementById('book-modal-review');
+let currentBookId = null;
+
+const openBook = (id) => {
+  const b = BOOKS[id]; if (!b) return;
+  currentBookId = id;
+  modalCover.style.background = b.bg;
+  modalTitle.textContent = b.title;
+  modalAuthor.textContent = b.author;
+  let saved = '';
+  try { saved = localStorage.getItem('review_' + id) || ''; } catch(e) {}
+  modalReview.textContent = saved || b.defaultReview;
+  modal.classList.add('open');
+  modalReview.focus();
+};
+
+const closeBook = () => {
+  if (currentBookId) {
+    try { localStorage.setItem('review_' + currentBookId, modalReview.textContent.trim()); } catch(e) {}
+  }
+  modal.classList.remove('open');
+  currentBookId = null;
+};
+
+document.querySelectorAll('.book[data-book]').forEach(el => {
+  el.addEventListener('click', e => {
+    e.stopPropagation();
+    openBook(el.dataset.book);
+  });
+});
+
+document.getElementById('book-modal-close').addEventListener('click', closeBook);
+modal.addEventListener('click', e => { if (e.target === modal) closeBook(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBook(); });
 </script>
 </body>
 </html>
