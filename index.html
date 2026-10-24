@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Therese's World</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400;1,6..96,300&family=DM+Sans:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:    #F5ECD6;
+  --parch:    #ECD8B0;
+  --terra:    #BA5436;
+  --blue:     #2B5E8A;
+  --amber:    #D49020;
+  --sage:     #5A7A5A;
+  --fg:       #221608;
+  --fg-mid:   #6A4830;
+  --fg-soft:  #A08060;
+  --white:    #FDFAF2;
+  --ff-d: 'Bodoni Moda', 'Didot', Georgia, serif;
+  --ff-b: 'DM Sans', system-ui, sans-serif;
+  --ff-h: 'DM Sans', system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --cream: #18120A; --parch: #201608; --fg: #EEE0C8;
+    --fg-mid: #C0A07A; --fg-soft: #886840; --white: #241A0E;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --cream: #18120A; --parch: #201608; --fg: #EEE0C8;
+  --fg-mid: #C0A07A; --fg-soft: #886840; --white: #241A0E;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: var(--cream); color: var(--fg); font-family: var(--ff-b);
+  overflow: hidden; cursor: grab; touch-action: none;
+  -webkit-user-select: none; user-select: none;
+}
+body.drag { cursor: grabbing; }
+#canvas { position: fixed; inset: 0; overflow: hidden; }
+#world { position: absolute; width: 3600px; height: 2800px; will-change: transform; }
+.intro {
+  position: absolute; left: 1600px; top: 940px; transform: translateX(-50%);
+  text-align: center; pointer-events: none; width: 380px;
+}
+.intro-name {
+  font-family: var(--ff-d); font-size: 80px; font-weight: 400;
+  font-style: italic; line-height: .95; color: var(--fg); letter-spacing: -.02em;
+}
+.intro-rule { width: 32px; height: 1px; background: var(--terra); margin: 18px auto; }
+.intro-sub {
+  font-family: var(--ff-h); font-size: 17px; font-weight: 300; font-style: italic;
+  line-height: 1.8; color: var(--fg-mid); letter-spacing: .01em;
+}
+.sec {
+  position: absolute; font-family: var(--ff-d); font-style: italic; font-size: 13px;
+  letter-spacing: .12em; color: var(--fg-soft); pointer-events: none; opacity: .7;
+}
+.book {
+  position: absolute; cursor: pointer; transform: rotate(var(--r, 0deg));
+  transition: transform .3s ease, filter .3s ease;
+  animation: bob var(--dur, 6s) ease-in-out infinite var(--del, 0s); z-index: 10;
+}
+.book:hover {
+  transform: rotate(var(--r, 0deg)) scale(1.10) translateY(-8px);
+  filter: drop-shadow(0 20px 44px rgba(34,22,8,.26)); z-index: 60;
+}
+.book-cover {
+  width: var(--w, 86px); height: var(--h, 130px); border-radius: 1px 4px 4px 1px;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 12px 12px 14px 20px; position: relative; overflow: hidden;
+  box-shadow: -5px 2px 12px rgba(0,0,0,.28), 4px 6px 24px rgba(34,22,8,.14);
+}
+.book-cover::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 14px;
+  background: linear-gradient(to right, rgba(0,0,0,.26), rgba(0,0,0,.05) 70%, transparent);
+}
+.book-cover::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(125deg, rgba(255,255,255,.14) 0%, transparent 52%);
+  pointer-events: none;
+}
+.book-line { position: absolute; top: 28px; left: 18px; right: 12px; height: 1px; background: rgba(255,255,255,.25); }
+.book-title {
+  font-family: var(--ff-d); font-size: 10.5px; font-weight: 400; line-height: 1.4;
+  color: rgba(255,255,255,.96); position: relative; z-index: 2;
+  text-shadow: 0 1px 4px rgba(0,0,0,.45);
+}
+.book-author {
+  font-family: var(--ff-b); font-size: 7px; font-weight: 300; color: rgba(255,255,255,.60);
+  margin-top: 5px; position: relative; z-index: 2; letter-spacing: .09em; text-transform: uppercase;
+}
+.polaroid {
+  position: absolute; background: var(--white); padding: 8px 8px 36px;
+  box-shadow: 4px 6px 28px rgba(34,22,8,.13); cursor: pointer;
+  transform: rotate(var(--r, 0deg)); transition: transform .3s ease, box-shadow .3s ease;
+  animation: bob var(--dur, 7s) ease-in-out infinite var(--del, 0s); z-index: 10;
+}
+.polaroid:hover {
+  transform: rotate(var(--r, 0deg)) scale(1.07) translateY(-6px);
+  box-shadow: 6px 14px 48px rgba(34,22,8,.22); z-index: 60;
+}
+.polaroid svg { display: block; }
+.pol-cap {
+  font-family: var(--ff-h); font-size: 14px; text-align: center; color: #4A3020;
+  position: absolute; bottom: 9px; left: 0; right: 0; padding: 0 6px;
+}
+.note {
+  position: absolute; padding: 15px 17px 18px; box-shadow: 3px 4px 16px rgba(34,22,8,.10);
+  transform: rotate(var(--r, 0deg)); cursor: pointer; max-width: 192px;
+  transition: transform .3s ease; animation: bob var(--dur, 8s) ease-in-out infinite var(--del, 0s); z-index: 10;
+}
+.note:hover { transform: rotate(var(--r, 0deg)) scale(1.06); z-index: 60; }
+.note-text { font-family: var(--ff-h); font-size: 16px; line-height: 1.55; color: #3A2A10; }
+.doodle {
+  position: absolute; pointer-events: none; opacity: .5;
+  animation: bob var(--dur, 9s) ease-in-out infinite var(--del, 0s);
+}
+@keyframes bob {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 var(--bob, -8px); }
+}
+@media (prefers-reduced-motion: reduce) { .book, .polaroid, .note, .doodle { animation: none; } }
+#ui {
+  position: fixed; inset: 0; pointer-events: none; z-index: 200;
+  padding: max(22px, env(safe-area-inset-top, 0px)) max(22px, env(safe-area-inset-right, 0px))
+           max(22px, env(safe-area-inset-bottom, 0px)) max(22px, env(safe-area-inset-left, 0px));
+}
+#ui-top { display: flex; align-items: flex-start; justify-content: space-between; }
+#wordmark {
+  font-family: var(--ff-d); font-style: italic; font-size: 22px;
+  font-weight: 400; color: var(--fg); opacity: .5; letter-spacing: .01em;
+}
+#nav { display: flex; gap: 8px; pointer-events: all; flex-wrap: wrap; justify-content: flex-end; }
+.pill {
+  font-family: var(--ff-b); font-size: 10.5px; font-weight: 400; letter-spacing: .1em;
+  text-transform: uppercase; padding: 7px 16px; background: transparent; color: var(--fg);
+  border: 1px solid var(--fg-soft); border-radius: 100px; cursor: pointer; opacity: .5;
+  transition: opacity .2s, background .2s, color .2s;
+}
+.pill:hover { opacity: 1; background: var(--fg); color: var(--cream); border-color: var(--fg); }
+#hint {
+  position: absolute; bottom: max(22px, env(safe-area-inset-bottom, 0px));
+  left: 50%; transform: translateX(-50%); font-family: var(--ff-b); font-size: 10px;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--fg-soft); opacity: .45; white-space: nowrap;
+}
+</style>
+</head>
+<body>
+
+<div id="ui">
+  <div id="ui-top">
+    <span id="wordmark">Therese</span>
+    <div id="nav">
+      <button class="pill" data-wx="420" data-wy="440">Books</button>
+      <button class="pill" data-wx="2080" data-wy="1540">Trips</button>
+      <button class="pill" data-wx="1600" data-wy="1000">Home</button>
+    </div>
+  </div>
+  <span id="hint">drag to explore</span>
+</div>
+
+<div id="canvas">
+<div id="world">
+
+<div class="intro">
+  <div class="intro-name">Therese</div>
+  <div class="intro-rule"></div>
+  <div class="intro-sub">things I love,<br>places I've been,<br>thoughts I carry</div>
+</div>
+
+<!-- Doodles -->
+<div class="doodle" style="--dur:10s;--del:0s;--bob:-6px;left:1860px;top:900px;">
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+    <path d="M20 4 L21.5 18 L20 20 L18.5 18 Z" stroke="var(--terra)" stroke-width="1.2"/><path d="M36 20 L22 21.5 L20 20 L22 18.5 Z" stroke="var(--terra)" stroke-width="1.2"/><path d="M20 36 L18.5 22 L20 20 L21.5 22 Z" stroke="var(--terra)" stroke-width="1.2"/><path d="M4 20 L18 18.5 L20 20 L18 21.5 Z" stroke="var(--terra)" stroke-width="1.2"/><circle cx="20" cy="20" r="2" fill="var(--terra)" opacity=".7"/>
+  </svg>
+</div>
+<div class="doodle" style="--dur:11s;--del:-2s;--bob:-5px;left:660px;top:230px;opacity:.4;">
+  <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+    <circle cx="19" cy="19" r="6" stroke="var(--amber)" stroke-width="1.2"/>
+    <line x1="19" y1="2" x2="19" y2="8" stroke="var(--amber)" stroke-width="1.2" stroke-linecap="round"/>
+    <line x1="19" y1="30" x2="19" y2="36" stroke="var(--amber)" stroke-width="1.2" stroke-linecap="round"/>
+    <line x1="2" y1="19" x2="8" y2="19" stroke="var(--amber)" stroke-width="1.2" stroke-linecap="round"/>
+    <line x1="30" y1="19" x2="36" y2="19" stroke="var(--amber)" stroke-width="1.2" stroke-linecap="round"/>
+    <line x1="6.5" y1="6.5" x2="10.7" y2="10.7" stroke="var(--amber)" stroke-width="1.2" stroke-linecap="round"/>
+    <line x1="27.3" y1="27.3" x2="31.5" y2="31.5" stroke="var(--amber)" stroke-width="1.2" stroke-linecap="round"/>
+    <line x1="31.5" y1="6.5" x2="27.3" y2="10.7" stroke="var(--amber)" stroke-width="1.2" stroke-linecap="round"/>
+    <line x1="10.7" y1="27.3" x2="6.5" y2="31.5" stroke="var(--amber)" stroke-width="1.2" stroke-linecap="round"/>
+  </svg>
+</div>
+<div class="doodle" style="--dur:9s;--del:-4s;--bob:-7px;left:595px;top:560px;opacity:.45;">
+  <svg width="34" height="44" viewBox="0 0 34 44" fill="none">
+    <path d="M17 42 L17 16" stroke="var(--sage)" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M17 32 Q8 26 6 18" stroke="var(--sage)" stroke-width="1.2" stroke-linecap="round"/><path d="M17 28 Q26 22 28 14" stroke="var(--sage)" stroke-width="1.2" stroke-linecap="round"/><path d="M17 16 Q14 8 17 2 Q20 8 17 16Z" stroke="var(--sage)" stroke-width="1.1"/>
+  </svg>
+</div>
+<div class="doodle" style="--dur:12s;--del:-1s;--bob:-9px;left:1480px;top:620px;opacity:.4;">
+  <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+    <path d="M20 4 Q6 8 6 16 Q6 24 20 28 Q10 26 8 16 Q6 8 20 4Z" stroke="var(--blue)" stroke-width="1.2"/>
+  </svg>
+</div>
+<div class="doodle" style="--dur:8s;--del:-3s;--bob:-6px;left:2400px;top:1340px;opacity:.4;">
+  <svg width="52" height="22" viewBox="0 0 52 22" fill="none">
+    <path d="M2 14 Q9 6 16 14 Q23 22 30 14 Q37 6 44 14 Q49 19 52 14" stroke="var(--blue)" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M2 7 Q9 0 16 7 Q23 14 30 7 Q37 0 44 7 Q49 12 52 7" stroke="var(--blue)" stroke-width="1" stroke-linecap="round" opacity=".5"/>
+  </svg>
+</div>
+<div class="doodle" style="--dur:13s;--del:-6s;--bob:-4px;left:1200px;top:1100px;opacity:.38;">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <line x1="12" y1="2" x2="12" y2="22" stroke="var(--terra)" stroke-width="1.3" stroke-linecap="round"/>
+    <line x1="2" y1="12" x2="22" y2="12" stroke="var(--terra)" stroke-width="1.3" stroke-linecap="round"/>
+    <line x1="5" y1="5" x2="19" y2="19" stroke="var(--terra)" stroke-width="1.3" stroke-linecap="round"/>
+    <line x1="19" y1="5" x2="5" y2="19" stroke="var(--terra)" stroke-width="1.3" stroke-linecap="round"/>
+  </svg>
+</div>
+<div class="doodle" style="--dur:10s;--del:-5s;--bob:-8px;left:2630px;top:1050px;opacity:.38;">
+  <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+    <circle cx="18" cy="18" r="14" stroke="var(--amber)" stroke-width="1.1" stroke-dasharray="2.5 4" stroke-linecap="round"/>
+  </svg>
+</div>
+<div class="doodle" style="--dur:11s;--del:-7s;--bob:-5px;left:1740px;top:1080px;opacity:.4;transform:rotate(15deg);">
+  <svg width="38" height="22" viewBox="0 0 38 22" fill="none">
+    <path d="M2 11 Q18 4 34 11" stroke="var(--fg-soft)" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M28 6 L34 11 L28 16" stroke="var(--fg-soft)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</div>
+<div class="doodle" style="--dur:9s;--del:-2.5s;--bob:-6px;left:2700px;top:1520px;opacity:.42;">
+  <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+    <path d="M18 32 L18 14" stroke="var(--sage)" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M18 22 Q10 18 8 10 Q16 10 18 18Z" stroke="var(--sage)" stroke-width="1.1"/>
+    <path d="M18 18 Q26 14 28 6 Q20 6 18 14Z" stroke="var(--sage)" stroke-width="1.1"/>
+  </svg>
+</div>
+
+<!-- Books -->
+<div class="sec" style="left:200px;top:216px;">books</div>
+<div class="book" style="--r:-5deg;--dur:6s;--del:0s;--bob:-9px;left:214px;top:272px;"><div class="book-cover" style="--w:84px;--h:128px;background:linear-gradient(160deg,#1B4A68,#0A2030);"><div class="book-line"></div><div class="book-title">The Midnight Library</div><div class="book-author">Matt Haig</div></div></div>
+<div class="book" style="--r:4deg;--dur:7.5s;--del:-1.5s;--bob:-7px;left:330px;top:254px;"><div class="book-cover" style="--w:88px;--h:134px;background:linear-gradient(175deg,#2C5825,#0F2410);"><div class="book-line"></div><div class="book-title">Braiding Sweetgrass</div><div class="book-author">Robin W. Kimmerer</div></div></div>
+<div class="book" style="--r:-2deg;--dur:5.5s;--del:-3s;--bob:-10px;left:454px;top:288px;"><div class="book-cover" style="--w:80px;--h:122px;background:linear-gradient(180deg,#E4D4C0,#BEA07A);"><div class="book-line" style="background:rgba(40,20,8,.18);"></div><div class="book-title" style="color:#2A1A0A;">Normal People</div><div class="book-author" style="color:rgba(42,26,10,.5);">Sally Rooney</div></div></div>
+<div class="book" style="--r:5deg;--dur:8s;--del:-2s;--bob:-7px;left:260px;top:432px;"><div class="book-cover" style="--w:90px;--h:138px;background:linear-gradient(160deg,#181828,#0F3460);"><div class="book-line"></div><div class="book-title">Sapiens</div><div class="book-author">Yuval Noah Harari</div></div></div>
+<div class="book" style="--r:-6deg;--dur:6.5s;--del:-4s;--bob:-11px;left:384px;top:412px;"><div class="book-cover" style="--w:84px;--h:130px;background:linear-gradient(155deg,#C07018,#5C2C00);"><div class="book-line"></div><div class="book-title">The Alchemist</div><div class="book-author">Paulo Coelho</div></div></div>
+<div class="book" style="--r:2deg;--dur:7s;--del:-1s;--bob:-6px;left:512px;top:372px;"><div class="book-cover" style="--w:86px;--h:130px;background:linear-gradient(170deg,#E0E6EE,#8898AA);"><div class="book-line" style="background:rgba(20,40,60,.2);"></div><div class="book-title" style="color:#1A2A38;">When Breath Becomes Air</div><div class="book-author" style="color:rgba(26,42,56,.52);">Paul Kalanithi</div></div></div>
+<div class="book" style="--r:-3deg;--dur:6s;--del:-5s;--bob:-8px;left:178px;top:440px;"><div class="book-cover" style="--w:78px;--h:118px;background:linear-gradient(165deg,#881818,#440A0A);"><div class="book-line"></div><div class="book-title">Stoner</div><div class="book-author">John Williams</div></div></div>
+<div class="book" style="--r:4deg;--dur:7.5s;--del:-3.5s;--bob:-7px;left:454px;top:514px;"><div class="book-cover" style="--w:82px;--h:124px;background:linear-gradient(160deg,#385C76,#0E2030);"><div class="book-line"></div><div class="book-title">Piranesi</div><div class="book-author">Susanna Clarke</div></div></div>
+
+<!-- Trips -->
+<div class="sec" style="left:1802px;top:1342px;">places</div>
+<div class="polaroid" style="--r:-5deg;--dur:7s;--del:0s;--bob:-7px;left:1828px;top:1400px;">
+  <svg width="152" height="118" viewBox="0 0 152 118"><defs><linearGradient id="jp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B4D0E4"/><stop offset="1" stop-color="#E4C0CC"/></linearGradient></defs><rect width="152" height="118" fill="url(#jp)"/><polygon points="76,18 30,92 122,92" fill="white" opacity=".88"/><polygon points="76,18 54,50 98,50" fill="#D8DDE4" opacity=".6"/><circle cx="22" cy="70" r="15" fill="#F2B0C0" opacity=".8"/><circle cx="14" cy="80" r="10" fill="#EEA0B4" opacity=".65"/><circle cx="130" cy="64" r="17" fill="#F2B0C0" opacity=".8"/><circle cx="140" cy="74" r="11" fill="#EEA0B4" opacity=".65"/><rect y="90" width="152" height="28" fill="#68885A" opacity=".6"/><circle cx="76" cy="18" r="9" fill="#E0283C" opacity=".82"/></svg>
+  <div class="pol-cap">Japan — spring ✿</div>
+</div>
+<div class="polaroid" style="--r:4deg;--dur:8s;--del:-2s;--bob:-9px;left:2022px;top:1376px;">
+  <svg width="144" height="114" viewBox="0 0 144 114"><defs><linearGradient id="mo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0A040"/><stop offset=".6" stop-color="#DC5E28"/><stop offset="1" stop-color="#B43C1E"/></linearGradient></defs><rect width="144" height="114" fill="url(#mo)"/><rect x="0" y="52" width="30" height="62" fill="#B47840"/><rect x="24" y="42" width="24" height="72" fill="#C48850"/><rect x="44" y="48" width="20" height="66" fill="#B47840"/><rect x="60" y="38" width="28" height="76" fill="#CE9058"/><rect x="84" y="46" width="22" height="68" fill="#C48850"/><rect x="102" y="36" width="22" height="78" fill="#CE9058"/><rect x="120" y="50" width="24" height="64" fill="#B47840"/><path d="M26 68 Q37 58 48 68" fill="#5A2808" opacity=".5"/><path d="M62 60 Q74 50 86 60" fill="#5A2808" opacity=".5"/></svg>
+  <div class="pol-cap">Morocco — medina</div>
+</div>
+<div class="polaroid" style="--r:-3deg;--dur:6.5s;--del:-1s;--bob:-5px;left:2218px;top:1412px;">
+  <svg width="156" height="122" viewBox="0 0 156 122"><defs><linearGradient id="pat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#78BCD8"/><stop offset="1" stop-color="#BED4E4"/></linearGradient></defs><rect width="156" height="122" fill="url(#pat)"/><ellipse cx="40" cy="24" rx="30" ry="11" fill="white" opacity=".78"/><ellipse cx="122" cy="18" rx="24" ry="9" fill="white" opacity=".68"/><polygon points="0,92 36,56 72,92" fill="#8E9BA8"/><polygon points="32,92 72,24 112,92" fill="#7E8C9E"/><polygon points="70,92 112,38 156,92" fill="#687888"/><polygon points="72,24 54,52 90,52" fill="white" opacity=".86"/><polygon points="112,38 100,60 124,60" fill="white" opacity=".72"/><ellipse cx="78" cy="110" rx="70" ry="18" fill="#4E8CBE" opacity=".42"/><rect y="92" width="156" height="30" fill="#487838" opacity=".62"/></svg>
+  <div class="pol-cap">Patagonia</div>
+</div>
+<div class="polaroid" style="--r:6deg;--dur:9s;--del:-3s;--bob:-10px;left:1916px;top:1578px;">
+  <svg width="148" height="118" viewBox="0 0 148 118"><rect width="148" height="118" fill="#88CCE8"/><defs><linearGradient id="am" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4EBECE"/><stop offset="1" stop-color="#1880A4"/></linearGradient></defs><rect y="68" width="148" height="50" fill="url(#am)"/><rect x="0" y="32" width="148" height="40" fill="#C4A46E" opacity=".8"/><rect x="8" y="40" width="18" height="30" fill="#DC6E50"/><rect x="28" y="44" width="16" height="26" fill="#ECD840"/><rect x="46" y="36" width="20" height="34" fill="#50BA6A"/><rect x="68" y="42" width="18" height="28" fill="#DC6E50"/><rect x="88" y="36" width="22" height="34" fill="#CC80C8"/><rect x="112" y="44" width="20" height="26" fill="#ECD840"/><polygon points="8,40 17,32 26,40" fill="#A04820"/><polygon points="46,36 56,27 66,36" fill="#287040"/></svg>
+  <div class="pol-cap">Amalfi Coast ☀</div>
+</div>
+<div class="polaroid" style="--r:-2deg;--dur:7.5s;--del:-4s;--bob:-7px;left:2146px;top:1582px;">
+  <svg width="148" height="118" viewBox="0 0 148 118"><defs><linearGradient id="nyc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0C1830"/><stop offset="1" stop-color="#1A2A5A"/></linearGradient></defs><rect width="148" height="118" fill="url(#nyc)"/><rect x="0" y="64" width="12" height="54" fill="#0C1020"/><rect x="10" y="48" width="18" height="70" fill="#141C2E"/><rect x="26" y="32" width="14" height="86" fill="#0C1020"/><rect x="38" y="52" width="10" height="66" fill="#141C2E"/><rect x="46" y="22" width="22" height="96" fill="#0C1020"/><rect x="52" y="12" width="8" height="106" fill="#141C2E"/><rect x="66" y="36" width="16" height="82" fill="#0C1020"/><rect x="80" y="28" width="20" height="90" fill="#141C2E"/><rect x="98" y="44" width="14" height="74" fill="#0C1020"/><rect x="110" y="32" width="18" height="86" fill="#141C2E"/><rect x="126" y="52" width="22" height="66" fill="#0C1020"/><rect x="28" y="40" width="3" height="3" fill="#F0D060" opacity=".9"/><rect x="34" y="36" width="3" height="3" fill="#F0D060" opacity=".8"/><rect x="48" y="28" width="3" height="3" fill="#F0D060" opacity=".9"/><rect x="56" y="18" width="3" height="3" fill="#F0D060" opacity=".85"/><rect x="68" y="44" width="3" height="3" fill="#F0D060" opacity=".9"/><rect x="82" y="34" width="3" height="3" fill="#F0D060" opacity=".8"/><rect x="112" y="38" width="3" height="3" fill="#F0D060" opacity=".9"/><rect y="98" width="148" height="20" fill="#080E1C"/></svg>
+  <div class="pol-cap">New York City</div>
+</div>
+
+<!-- Notes -->
+<div class="note" style="--r:-4deg;--dur:8s;--del:0s;--bob:-7px;background:#E8C464;left:922px;top:578px;"><div class="note-text">slow mornings make everything better</div></div>
+<div class="note" style="--r:3deg;--dur:9s;--del:-2s;--bob:-5px;background:#A4C8A0;left:1752px;top:718px;"><div class="note-text">the best conversations happen at 2am</div></div>
+<div class="note" style="--r:-2deg;--dur:7s;--del:-4s;--bob:-8px;background:#E8C464;left:1122px;top:1240px;"><div class="note-text">learning to sit with uncertainty</div></div>
+<div class="note" style="--r:5deg;--dur:10s;--del:-1s;--bob:-6px;background:#A4BEDE;left:2418px;top:942px;"><div class="note-text">beauty lives in the specific, not the general</div></div>
+<div class="note" style="--r:-3deg;--dur:7.5s;--del:-3s;--bob:-9px;background:#E8C464;left:692px;top:930px;"><div class="note-text">every place changes you a little</div></div>
+<div class="note" style="--r:2deg;--dur:8.5s;--del:-5s;--bob:-6px;background:#F0C0B4;left:1898px;top:1122px;"><div class="note-text">it's okay to not know yet</div></div>
+<div class="note" style="--r:-1deg;--dur:9s;--del:-2.5s;--bob:-8px;background:#A4C8A0;left:1342px;top:682px;"><div class="note-text">the world is bigger and stranger than I imagined</div></div>
+<div class="note" style="--r:4deg;--dur:7s;--del:-6s;--bob:-5px;background:#E8C464;left:2698px;top:1298px;"><div class="note-text">reading is the closest thing to telepathy</div></div>
+
+</div>
+</div>
+
+<script>
+const world = document.getElementById('world');
+const body = document.body;
+let tx = window.innerWidth / 2 - 1600;
+let ty = window.innerHeight / 2 - 1000;
+let sx = tx, sy = ty, mx = 0, my = 0, on = false;
+const set = () => world.style.transform = `translate3d(${tx}px,${ty}px,0)`;
+set();
+body.addEventListener('mousedown', e => {
+  if (e.target.closest('.pill')) return;
+  on = true; mx = e.clientX; my = e.clientY; sx = tx; sy = ty;
+  body.classList.add('drag');
+});
+document.addEventListener('mousemove', e => {
+  if (!on) return;
+  tx = sx + e.clientX - mx; ty = sy + e.clientY - my; set();
+});
+document.addEventListener('mouseup', () => { on = false; body.classList.remove('drag'); });
+body.addEventListener('touchstart', e => {
+  if (e.target.closest('.pill')) return;
+  const t = e.touches[0]; on = true;
+  mx = t.clientX; my = t.clientY; sx = tx; sy = ty;
+}, { passive: true });
+body.addEventListener('touchmove', e => {
+  if (!on) return;
+  const t = e.touches[0];
+  tx = sx + t.clientX - mx; ty = sy + t.clientY - my; set();
+  e.preventDefault();
+}, { passive: false });
+body.addEventListener('touchend', () => { on = false; });
+document.querySelectorAll('.pill[data-wx]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const toTx = innerWidth / 2 - +btn.dataset.wx;
+    const toTy = innerHeight / 2 - +btn.dataset.wy;
+    const fTx = tx, fTy = ty, t0 = performance.now(), dur = 620;
+    const step = now => {
+      let p = Math.min((now - t0) / dur, 1);
+      p = p < .5 ? 2*p*p : -1+(4-2*p)*p;
+      tx = fTx + (toTx-fTx)*p; ty = fTy + (toTy-fTy)*p; set();
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
+});
+</script>
+</body>
+</html>
