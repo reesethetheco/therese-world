@@ -429,6 +429,68 @@ body.drag { cursor: grabbing; }
   opacity: .7;
 }
 
+/* Add-chapter card */
+.life-add-card {
+  position: absolute; background: transparent;
+  border: 1.5px dashed var(--fg-soft); border-radius: 3px;
+  width: 220px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 6px;
+  cursor: pointer; pointer-events: all;
+  transition: background .2s, border-color .2s, transform .25s ease;
+  opacity: .45;
+}
+.life-add-card:hover { background: var(--white); border-color: var(--terra); opacity: 1; transform: translateY(-3px); }
+.life-add-card-icon { font-size: 22px; line-height: 1; }
+.life-add-card-label {
+  font-family: var(--ff-b); font-size: 9.5px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--fg-soft);
+}
+
+/* New-chapter creation modal */
+#life-new-modal {
+  position: fixed; inset: 0; z-index: 510; display: none; align-items: center; justify-content: center;
+  background: rgba(34,22,8,.45); backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
+  padding: 24px;
+}
+#life-new-modal.open { display: flex; }
+#life-new-inner {
+  background: var(--cream); border-radius: 4px; max-width: 400px; width: 100%;
+  padding: 40px 40px 36px; position: relative;
+  box-shadow: 0 32px 80px rgba(34,22,8,.28);
+  animation: modal-in .3s cubic-bezier(.2,.8,.4,1);
+}
+#life-new-close {
+  position: absolute; top: 14px; right: 16px; background: none; border: none;
+  font-size: 22px; cursor: pointer; color: var(--fg-soft); opacity: .5; line-height: 1;
+  transition: opacity .2s;
+}
+#life-new-close:hover { opacity: 1; }
+#life-new-heading {
+  font-family: var(--ff-d); font-style: italic; font-size: 22px;
+  color: var(--fg); margin-bottom: 22px;
+}
+.life-new-row { display: flex; gap: 10px; margin-bottom: 14px; }
+#life-new-emoji {
+  font-size: 22px; width: 52px; text-align: center;
+  background: var(--white); border: 1px solid var(--fg-soft); border-radius: 3px;
+  padding: 8px 4px; cursor: text; outline: none; font-family: inherit;
+  flex-shrink: 0;
+}
+#life-new-title {
+  flex: 1; font-family: var(--ff-b); font-size: 14px; color: var(--fg);
+  background: var(--white); border: 1px solid var(--fg-soft); border-radius: 3px;
+  padding: 8px 12px; outline: none;
+  transition: border-color .2s;
+}
+#life-new-title:focus, #life-new-emoji:focus { border-color: var(--terra); }
+#life-new-submit {
+  width: 100%; padding: 11px; background: var(--terra); color: var(--white);
+  border: none; border-radius: 3px; font-family: var(--ff-b); font-size: 10px;
+  letter-spacing: .1em; text-transform: uppercase; cursor: pointer; margin-top: 8px;
+  opacity: .88; transition: opacity .2s;
+}
+#life-new-submit:hover { opacity: 1; }
+
 /* Life / journal modal */
 #life-modal {
   position: fixed; inset: 0; z-index: 500; display: none; align-items: center; justify-content: center;
@@ -517,7 +579,6 @@ body.drag { cursor: grabbing; }
     <span id="wordmark">Therese</span>
     <div id="nav">
       <button class="pill" data-wx="420" data-wy="440">Books</button>
-      <button class="pill" data-wx="2080" data-wy="1540">Trips</button>
       <button class="pill" data-wx="900" data-wy="680">Writing</button>
       <button class="pill" data-wx="2800" data-wy="800">Wishlist</button>
       <button class="pill" data-wx="1400" data-wy="240">Resume</button>
@@ -584,6 +645,19 @@ body.drag { cursor: grabbing; }
     <div id="life-modal-rule"></div>
     <div id="life-modal-body" contenteditable="true" spellcheck="false" data-placeholder="Write your thoughts here…"></div>
     <div id="life-modal-hint">click to edit · auto-saved</div>
+  </div>
+</div>
+
+<!-- New life chapter modal -->
+<div id="life-new-modal">
+  <div id="life-new-inner">
+    <button id="life-new-close">×</button>
+    <div id="life-new-heading">add a life chapter</div>
+    <div class="life-new-row">
+      <input id="life-new-emoji" maxlength="2" placeholder="✨">
+      <input id="life-new-title" type="text" placeholder="chapter title…">
+    </div>
+    <button id="life-new-submit">add to canvas</button>
   </div>
 </div>
 
@@ -677,26 +751,8 @@ body.drag { cursor: grabbing; }
 </div>
 
 <!-- Life sections -->
-<div class="section-group" style="left:3360px;top:280px;">
+<div class="section-group" id="life-section-group" style="left:3360px;top:280px;">
 <div class="sec" style="left:0;top:0;">life chapters</div>
-<div class="life-card" data-life="mba" style="--r:-3deg;--dur:9s;--del:0s;left:0;top:40px;transform:rotate(-3deg);">
-  <span class="life-card-emoji">🎓</span>
-  <div class="life-card-title">The MBA</div>
-  <div class="life-card-preview" id="life-preview-mba">What I learned, why I went, and what surprised me.</div>
-  <div class="life-card-cta">read more →</div>
-</div>
-<div class="life-card" data-life="wedding" style="--r:4deg;--dur:8s;--del:-2s;left:256px;top:20px;transform:rotate(4deg);">
-  <span class="life-card-emoji">💍</span>
-  <div class="life-card-title">My Wedding</div>
-  <div class="life-card-preview" id="life-preview-wedding">The story, the day, the little moments I want to remember.</div>
-  <div class="life-card-cta">read more →</div>
-</div>
-<div class="life-card" data-life="finance" style="--r:-2deg;--dur:10s;--del:-4s;left:128px;top:280px;transform:rotate(-2deg);">
-  <span class="life-card-emoji">📈</span>
-  <div class="life-card-title">Finance</div>
-  <div class="life-card-preview" id="life-preview-finance">How I think about money, what I'm learning, and where I'm going.</div>
-  <div class="life-card-cta">read more →</div>
-</div>
 </div>
 
 <!-- Writing -->
@@ -733,30 +789,6 @@ body.drag { cursor: grabbing; }
 </div>
 </div>
 
-<!-- Trips -->
-<div class="section-group" style="left:1802px;top:1342px;">
-<div class="sec" style="left:0;top:0;">places</div>
-<div class="polaroid" style="--r:-5deg;--dur:7s;--del:0s;--bob:-7px;left:26px;top:58px;">
-  <svg width="152" height="118" viewBox="0 0 152 118"><defs><linearGradient id="jp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B4D0E4"/><stop offset="1" stop-color="#E4C0CC"/></linearGradient></defs><rect width="152" height="118" fill="url(#jp)"/><polygon points="76,18 30,92 122,92" fill="white" opacity=".88"/><polygon points="76,18 54,50 98,50" fill="#D8DDE4" opacity=".6"/><circle cx="22" cy="70" r="15" fill="#F2B0C0" opacity=".8"/><circle cx="14" cy="80" r="10" fill="#EEA0B4" opacity=".65"/><circle cx="130" cy="64" r="17" fill="#F2B0C0" opacity=".8"/><circle cx="140" cy="74" r="11" fill="#EEA0B4" opacity=".65"/><rect y="90" width="152" height="28" fill="#68885A" opacity=".6"/><circle cx="76" cy="18" r="9" fill="#E0283C" opacity=".82"/></svg>
-  <div class="pol-cap">Japan — spring ✿</div>
-</div>
-<div class="polaroid" style="--r:4deg;--dur:8s;--del:-2s;--bob:-9px;left:220px;top:34px;">
-  <svg width="144" height="114" viewBox="0 0 144 114"><defs><linearGradient id="mo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F0A040"/><stop offset=".6" stop-color="#DC5E28"/><stop offset="1" stop-color="#B43C1E"/></linearGradient></defs><rect width="144" height="114" fill="url(#mo)"/><rect x="0" y="52" width="30" height="62" fill="#B47840"/><rect x="24" y="42" width="24" height="72" fill="#C48850"/><rect x="44" y="48" width="20" height="66" fill="#B47840"/><rect x="60" y="38" width="28" height="76" fill="#CE9058"/><rect x="84" y="46" width="22" height="68" fill="#C48850"/><rect x="102" y="36" width="22" height="78" fill="#CE9058"/><rect x="120" y="50" width="24" height="64" fill="#B47840"/><path d="M26 68 Q37 58 48 68" fill="#5A2808" opacity=".5"/><path d="M62 60 Q74 50 86 60" fill="#5A2808" opacity=".5"/></svg>
-  <div class="pol-cap">Morocco — medina</div>
-</div>
-<div class="polaroid" style="--r:-3deg;--dur:6.5s;--del:-1s;--bob:-5px;left:416px;top:70px;">
-  <svg width="156" height="122" viewBox="0 0 156 122"><defs><linearGradient id="pat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#78BCD8"/><stop offset="1" stop-color="#BED4E4"/></linearGradient></defs><rect width="156" height="122" fill="url(#pat)"/><ellipse cx="40" cy="24" rx="30" ry="11" fill="white" opacity=".78"/><ellipse cx="122" cy="18" rx="24" ry="9" fill="white" opacity=".68"/><polygon points="0,92 36,56 72,92" fill="#8E9BA8"/><polygon points="32,92 72,24 112,92" fill="#7E8C9E"/><polygon points="70,92 112,38 156,92" fill="#687888"/><polygon points="72,24 54,52 90,52" fill="white" opacity=".86"/><polygon points="112,38 100,60 124,60" fill="white" opacity=".72"/><ellipse cx="78" cy="110" rx="70" ry="18" fill="#4E8CBE" opacity=".42"/><rect y="92" width="156" height="30" fill="#487838" opacity=".62"/></svg>
-  <div class="pol-cap">Patagonia</div>
-</div>
-<div class="polaroid" style="--r:6deg;--dur:9s;--del:-3s;--bob:-10px;left:114px;top:236px;">
-  <svg width="148" height="118" viewBox="0 0 148 118"><rect width="148" height="118" fill="#88CCE8"/><defs><linearGradient id="am" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4EBECE"/><stop offset="1" stop-color="#1880A4"/></linearGradient></defs><rect y="68" width="148" height="50" fill="url(#am)"/><rect x="0" y="32" width="148" height="40" fill="#C4A46E" opacity=".8"/><rect x="8" y="40" width="18" height="30" fill="#DC6E50"/><rect x="28" y="44" width="16" height="26" fill="#ECD840"/><rect x="46" y="36" width="20" height="34" fill="#50BA6A"/><rect x="68" y="42" width="18" height="28" fill="#DC6E50"/><rect x="88" y="36" width="22" height="34" fill="#CC80C8"/><rect x="112" y="44" width="20" height="26" fill="#ECD840"/><polygon points="8,40 17,32 26,40" fill="#A04820"/><polygon points="46,36 56,27 66,36" fill="#287040"/></svg>
-  <div class="pol-cap">Amalfi Coast ☀</div>
-</div>
-<div class="polaroid" style="--r:-2deg;--dur:7.5s;--del:-4s;--bob:-7px;left:344px;top:240px;">
-  <svg width="148" height="118" viewBox="0 0 148 118"><defs><linearGradient id="nyc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0C1830"/><stop offset="1" stop-color="#1A2A5A"/></linearGradient></defs><rect width="148" height="118" fill="url(#nyc)"/><rect x="0" y="64" width="12" height="54" fill="#0C1020"/><rect x="10" y="48" width="18" height="70" fill="#141C2E"/><rect x="26" y="32" width="14" height="86" fill="#0C1020"/><rect x="38" y="52" width="10" height="66" fill="#141C2E"/><rect x="46" y="22" width="22" height="96" fill="#0C1020"/><rect x="52" y="12" width="8" height="106" fill="#141C2E"/><rect x="66" y="36" width="16" height="82" fill="#0C1020"/><rect x="80" y="28" width="20" height="90" fill="#141C2E"/><rect x="98" y="44" width="14" height="74" fill="#0C1020"/><rect x="110" y="32" width="18" height="86" fill="#141C2E"/><rect x="126" y="52" width="22" height="66" fill="#0C1020"/><rect x="28" y="40" width="3" height="3" fill="#F0D060" opacity=".9"/><rect x="34" y="36" width="3" height="3" fill="#F0D060" opacity=".8"/><rect x="48" y="28" width="3" height="3" fill="#F0D060" opacity=".9"/><rect x="56" y="18" width="3" height="3" fill="#F0D060" opacity=".85"/><rect x="68" y="44" width="3" height="3" fill="#F0D060" opacity=".9"/><rect x="82" y="34" width="3" height="3" fill="#F0D060" opacity=".8"/><rect x="112" y="38" width="3" height="3" fill="#F0D060" opacity=".9"/><rect y="98" width="148" height="20" fill="#080E1C"/></svg>
-  <div class="pol-cap">New York City</div>
-</div>
-</div>
 
 
 </div>
@@ -779,7 +811,7 @@ set();
 
 // Pan — mouse
 body.addEventListener('mousedown', e => {
-  if (e.target.closest('.pill,.zoom-btn,#book-modal,.life-card,#life-modal')) return;
+  if (e.target.closest('.pill,.zoom-btn,#book-modal,.life-card,.life-add-card,#life-modal,#life-new-modal')) return;
   on = true; mx = e.clientX; my = e.clientY; sx = tx; sy = ty;
   body.classList.add('drag');
 });
@@ -792,7 +824,7 @@ document.addEventListener('mouseup', () => { on = false; body.classList.remove('
 // Pan — touch (single finger)
 let pinchDist0 = 0, pinchScale0 = 1, pinchTx0 = 0, pinchTy0 = 0;
 body.addEventListener('touchstart', e => {
-  if (e.target.closest('.pill,#book-modal,.life-card,#life-modal')) return;
+  if (e.target.closest('.pill,#book-modal,.life-card,.life-add-card,#life-modal,#life-new-modal')) return;
   if (e.touches.length === 2) {
     const a = e.touches[0], b = e.touches[1];
     pinchDist0 = Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
@@ -1093,35 +1125,92 @@ document.querySelectorAll('.book[data-book]').forEach(el => {
 document.getElementById('book-modal-close').addEventListener('click', closeBook);
 modal.addEventListener('click', e => { if (e.target === modal) closeBook(); });
 
-// ── Life / journal sections ───────────────────────────
-const LIFE_SECTIONS = {
-  mba:     { emoji: '🎓', title: 'The MBA' },
-  wedding: { emoji: '💍', title: 'My Wedding' },
-  finance: { emoji: '📈', title: 'Finance' },
+// ── Life / journal sections (dynamic) ────────────────
+const LIFE_DEFAULTS = [
+  { id: 'mba',     emoji: '🎓', title: 'The MBA' },
+  { id: 'wedding', emoji: '💍', title: 'My Wedding' },
+  { id: 'finance', emoji: '📈', title: 'Finance' },
+];
+
+const CARD_ROTATIONS = [-3, 4, -2, 3, -4, 2, -1, 5];
+const CARD_DURATIONS = [9, 8, 10, 7.5, 9.5, 8.5, 10.5, 7];
+const CARD_DELAYS    = [0, -2, -4, -1, -3, -5, -1.5, -3.5];
+
+const getLifeChapters = () => {
+  try { return JSON.parse(localStorage.getItem('life_chapters')) || null; } catch { return null; }
 };
-
-const lifeModal      = document.getElementById('life-modal');
-const lifeEmoji      = document.getElementById('life-modal-emoji');
-const lifeTitle      = document.getElementById('life-modal-title');
-const lifeBody       = document.getElementById('life-modal-body');
-
+const saveLifeChapters = c => {
+  try { localStorage.setItem('life_chapters', JSON.stringify(c)); } catch {}
+};
 const lifeKey = id => `life_section_${id}`;
 
-const updateLifePreview = id => {
-  const text = localStorage.getItem(lifeKey(id)) || '';
-  const el = document.getElementById(`life-preview-${id}`);
-  if (el && text.trim()) el.textContent = text.trim().slice(0, 120);
-};
+if (!getLifeChapters()) saveLifeChapters(LIFE_DEFAULTS);
 
-Object.keys(LIFE_SECTIONS).forEach(id => updateLifePreview(id));
-
+const lifeGroup = document.getElementById('life-section-group');
+const lifeModal = document.getElementById('life-modal');
+const lifeEmoji = document.getElementById('life-modal-emoji');
+const lifeTitleEl = document.getElementById('life-modal-title');
+const lifeBody  = document.getElementById('life-modal-body');
 let currentLifeId = null;
 
-const openLife = id => {
-  const sec = LIFE_SECTIONS[id];
+const cardPos = i => {
+  const col = i % 2, row = Math.floor(i / 2);
+  return { left: col * 260, top: 40 + row * 290 + (col === 1 ? -20 : 0) };
+};
+
+const buildLifeCard = (ch, idx) => {
+  const { left, top } = cardPos(idx);
+  const r = CARD_ROTATIONS[idx % CARD_ROTATIONS.length];
+  const dur = CARD_DURATIONS[idx % CARD_DURATIONS.length];
+  const del = CARD_DELAYS[idx % CARD_DELAYS.length];
+  const preview = localStorage.getItem(lifeKey(ch.id)) || '';
+  const card = document.createElement('div');
+  card.className = 'life-card';
+  card.dataset.life = ch.id;
+  card.style.cssText = `--r:${r}deg;--dur:${dur}s;--del:${del}s;left:${left}px;top:${top}px;transform:rotate(${r}deg);`;
+  card.innerHTML = `
+    <span class="life-card-emoji">${ch.emoji}</span>
+    <div class="life-card-title">${ch.title}</div>
+    <div class="life-card-preview" id="life-preview-${ch.id}">${preview.trim() ? preview.trim().slice(0, 120) : defaultPreview(ch.id)}</div>
+    <div class="life-card-cta">read more →</div>`;
+  card.addEventListener('click', e => { e.stopPropagation(); openLife(ch.id, ch); });
+  return card;
+};
+
+const defaultPreview = id => ({
+  mba: 'What I learned, why I went, and what surprised me.',
+  wedding: 'The story, the day, the little moments I want to remember.',
+  finance: "How I think about money, what I'm learning, and where I'm going.",
+}[id] || 'click to start writing…');
+
+const addBtn = () => {
+  const chapters = getLifeChapters();
+  const idx = chapters.length;
+  const { left, top } = cardPos(idx);
+  const btn = document.createElement('div');
+  btn.className = 'life-add-card';
+  btn.id = 'life-add-btn';
+  btn.style.cssText = `left:${left}px;top:${top}px;width:220px;height:180px;`;
+  btn.innerHTML = `<span class="life-add-card-icon">＋</span><span class="life-add-card-label">new chapter</span>`;
+  btn.addEventListener('click', e => { e.stopPropagation(); openNewChapter(); });
+  return btn;
+};
+
+const renderLifeCards = () => {
+  // Remove all existing cards and add button
+  lifeGroup.querySelectorAll('.life-card, .life-add-card').forEach(el => el.remove());
+  const chapters = getLifeChapters() || LIFE_DEFAULTS;
+  chapters.forEach((ch, i) => lifeGroup.appendChild(buildLifeCard(ch, i)));
+  lifeGroup.appendChild(addBtn());
+};
+
+renderLifeCards();
+
+const openLife = (id, ch) => {
+  if (!ch) ch = (getLifeChapters() || []).find(c => c.id === id) || {};
   currentLifeId = id;
-  lifeEmoji.textContent = sec.emoji;
-  lifeTitle.textContent = sec.title;
+  lifeEmoji.textContent = ch.emoji || '';
+  lifeTitleEl.textContent = ch.title || '';
   lifeBody.textContent = localStorage.getItem(lifeKey(id)) || '';
   lifeModal.classList.add('open');
   document.body.style.cursor = 'default';
@@ -1132,27 +1221,59 @@ const closeLife = () => {
   if (currentLifeId) {
     const text = lifeBody.textContent;
     localStorage.setItem(lifeKey(currentLifeId), text);
-    updateLifePreview(currentLifeId);
+    const el = document.getElementById(`life-preview-${currentLifeId}`);
+    if (el && text.trim()) el.textContent = text.trim().slice(0, 120);
     currentLifeId = null;
   }
   lifeModal.classList.remove('open');
   document.body.style.cursor = '';
 };
 
-document.querySelectorAll('.life-card').forEach(card => {
-  card.addEventListener('click', e => {
-    e.stopPropagation();
-    openLife(card.dataset.life);
-  });
-});
-
 lifeBody.addEventListener('input', () => {
   if (currentLifeId) localStorage.setItem(lifeKey(currentLifeId), lifeBody.textContent);
 });
-
 document.getElementById('life-modal-close').addEventListener('click', closeLife);
 lifeModal.addEventListener('click', e => { if (e.target === lifeModal) closeLife(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && lifeModal.classList.contains('open')) closeLife(); });
+
+// ── New chapter modal ────────────────────────────────
+const newModal  = document.getElementById('life-new-modal');
+const newEmoji  = document.getElementById('life-new-emoji');
+const newTitle  = document.getElementById('life-new-title');
+
+const openNewChapter = () => {
+  newEmoji.value = ''; newTitle.value = '';
+  newModal.classList.add('open');
+  document.body.style.cursor = 'default';
+  setTimeout(() => newEmoji.focus(), 80);
+};
+const closeNewChapter = () => {
+  newModal.classList.remove('open');
+  document.body.style.cursor = '';
+};
+
+document.getElementById('life-new-close').addEventListener('click', closeNewChapter);
+newModal.addEventListener('click', e => { if (e.target === newModal) closeNewChapter(); });
+
+document.getElementById('life-new-submit').addEventListener('click', () => {
+  const emoji = newEmoji.value.trim() || '✨';
+  const title = newTitle.value.trim();
+  if (!title) { newTitle.focus(); return; }
+  const id = 'ch_' + Date.now();
+  const chapters = getLifeChapters() || [];
+  chapters.push({ id, emoji, title });
+  saveLifeChapters(chapters);
+  renderLifeCards();
+  closeNewChapter();
+});
+
+newTitle.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('life-new-submit').click(); });
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (lifeModal.classList.contains('open')) closeLife();
+    if (newModal.classList.contains('open')) closeNewChapter();
+  }
+});
 </script>
 </body>
 </html>
