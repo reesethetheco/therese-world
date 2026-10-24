@@ -125,6 +125,27 @@ body.drag { cursor: grabbing; }
   position: absolute; pointer-events: none; opacity: .5;
   animation: bob var(--dur, 9s) ease-in-out infinite var(--del, 0s);
 }
+/* Articles */
+.article-list { position: absolute; }
+.article-item {
+  display: block; font-family: var(--ff-b); font-size: 13px; font-weight: 300;
+  color: var(--fg-mid); text-decoration: none; line-height: 1;
+  padding: 9px 0; border-bottom: 1px solid var(--parch);
+  transition: color .2s; cursor: pointer; white-space: nowrap;
+}
+.article-item:hover { color: var(--terra); }
+.article-date { font-size: 10px; letter-spacing: .08em; color: var(--fg-soft); margin-right: 10px; }
+/* Wishlist */
+.wish-grid { position: absolute; display: flex; flex-direction: column; gap: 14px; }
+.wish-card {
+  background: var(--white); border-radius: 3px; padding: 14px 16px;
+  box-shadow: 3px 4px 18px rgba(34,22,8,.09);
+  animation: bob var(--dur, 7s) ease-in-out infinite var(--del, 0s);
+  max-width: 200px;
+}
+.wish-emoji { font-size: 22px; margin-bottom: 6px; display: block; }
+.wish-name { font-family: var(--ff-d); font-style: italic; font-size: 15px; color: var(--fg); line-height: 1.3; }
+.wish-sub { font-family: var(--ff-b); font-size: 10px; letter-spacing: .08em; color: var(--fg-soft); margin-top: 4px; text-transform: uppercase; }
 @keyframes bob {
   0%, 100% { translate: 0 0; }
   50% { translate: 0 var(--bob, -8px); }
@@ -227,6 +248,8 @@ body.drag { cursor: grabbing; }
     <div id="nav">
       <button class="pill" data-wx="420" data-wy="440">Books</button>
       <button class="pill" data-wx="2080" data-wy="1540">Trips</button>
+      <button class="pill" data-wx="900" data-wy="680">Writing</button>
+      <button class="pill" data-wx="2800" data-wy="800">Wishlist</button>
       <button class="pill" data-wx="1600" data-wy="1000">Home</button>
     </div>
   </div>
@@ -255,8 +278,6 @@ body.drag { cursor: grabbing; }
 
 <div class="intro">
   <div class="intro-name">Therese</div>
-  <div class="intro-rule"></div>
-  <div class="intro-sub">things I love,<br>places I've been,<br>thoughts I carry</div>
 </div>
 
 <!-- Doodles -->
@@ -327,6 +348,36 @@ body.drag { cursor: grabbing; }
 <div class="book" data-book="wbba" style="--r:-4deg;--dur:6s;--del:0s;--bob:-9px;left:214px;top:272px;"><div class="book-cover" style="--w:86px;--h:132px;background:linear-gradient(170deg,#E0E6EE,#8898AA);"><img class="book-img" src="https://covers.openlibrary.org/b/isbn/9780812988406-L.jpg" alt="When Breath Becomes Air cover" onerror="this.style.display='none'"></div></div>
 <div class="book" data-book="wit" style="--r:5deg;--dur:7.5s;--del:-1.5s;--bob:-7px;left:348px;top:254px;"><div class="book-cover" style="--w:90px;--h:138px;background:linear-gradient(160deg,#1A1A2E,#16213E);"><img class="book-img" src="https://covers.openlibrary.org/b/isbn/9781501158148-L.jpg" alt="What It Takes cover" onerror="this.style.display='none'"></div></div>
 <div class="book" data-book="tus" style="--r:-2deg;--dur:6.5s;--del:-2.5s;--bob:-10px;left:482px;top:278px;"><div class="book-cover" style="--w:84px;--h:128px;background:linear-gradient(165deg,#C8956C,#7B4A2A);"><img class="book-img" src="https://covers.openlibrary.org/b/isbn/9781572245372-L.jpg" alt="The Untethered Soul cover" onerror="this.style.display='none'"></div></div>
+
+<!-- Writing -->
+<div class="sec" style="left:660px;top:560px;">writing</div>
+<div class="article-list" style="left:660px;top:596px;width:340px;">
+  <a class="article-item" href="https://reesethetheco.bearblog.dev/keys-to-life/" target="_blank"><span class="article-date">Oct 2026</span>keys to life</a>
+  <a class="article-item" href="https://reesethetheco.bearblog.dev/what-i-observed-working-at-an-ammunition-manufacturing-business/" target="_blank"><span class="article-date">Jun 2025</span>what I observed working at an ammunition manufacturing business</a>
+  <a class="article-item" href="https://reesethetheco.bearblog.dev/finding-my-reason-to-keep-going/" target="_blank"><span class="article-date">Jun 2025</span>Finding My Reason to Keep Going</a>
+  <a class="article-item" href="https://reesethetheco.bearblog.dev/finding-my-own-pace/" target="_blank"><span class="article-date">Jun 2025</span>finding my own pace</a>
+  <a class="article-item" href="https://reesethetheco.bearblog.dev/articles-i-saved-in-may/" target="_blank"><span class="article-date">May 2025</span>articles i saved in may</a>
+  <a class="article-item" href="https://reesethetheco.bearblog.dev/what-helped-me-most-when-i-was-grieving-my-dad/" target="_blank"><span class="article-date">May 2025</span>🌼 What Helped Me Most When I Was Grieving My Dad</a>
+  <a class="article-item" href="https://reesethetheco.bearblog.dev/let-me-just-build-the-perfect-system-before-i-start/" target="_blank"><span class="article-date">May 2025</span>💻 let me just build the perfect system before i start</a>
+  <a class="article-item" href="https://reesethetheco.bearblog.dev/caught-up-in-the-tools/" target="_blank"><span class="article-date">May 2025</span>⚙️ caught up in the tools</a>
+  <a class="article-item" href="https://reesethetheco.bearblog.dev/just-post-something/" target="_blank"><span class="article-date">May 2024</span>just post something!!!</a>
+  <a class="article-item" href="https://reesethetheco.bearblog.dev/hi-there/" target="_blank"><span class="article-date">May 2024</span>hi there</a>
+</div>
+
+<!-- Wishlist -->
+<div class="sec" style="left:2640px;top:620px;">wishlist</div>
+<div class="wish-grid" style="left:2640px;top:656px;">
+  <div class="wish-card" style="--dur:7s;--del:0s;--bob:-6px;">
+    <span class="wish-emoji">💨</span>
+    <div class="wish-name">Dyson Airwrap</div>
+    <div class="wish-sub">the curling one</div>
+  </div>
+  <div class="wish-card" style="--dur:8s;--del:-2s;--bob:-8px;">
+    <span class="wish-emoji">🩰</span>
+    <div class="wish-name">Really Comfy Flats</div>
+    <div class="wish-sub">something I can walk all day in</div>
+  </div>
+</div>
 
 <!-- Trips -->
 <div class="sec" style="left:1802px;top:1342px;">places</div>
