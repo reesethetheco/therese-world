@@ -186,6 +186,125 @@ body.drag { cursor: grabbing; }
   opacity: .45; transition: opacity .2s, background .2s, color .2s; line-height: 1;
 }
 .zoom-btn:hover { opacity: 1; background: var(--fg); color: var(--cream); border-color: var(--fg); }
+/* Add memory button */
+#add-btn {
+  position: absolute; bottom: max(22px, env(safe-area-inset-bottom, 0px));
+  left: max(22px, env(safe-area-inset-left, 0px));
+  width: 38px; height: 38px; border-radius: 50%;
+  background: transparent; border: 1px solid var(--fg-soft); color: var(--fg);
+  font-size: 22px; font-weight: 300; cursor: pointer; pointer-events: all;
+  display: flex; align-items: center; justify-content: center;
+  opacity: .45; transition: opacity .2s, background .2s, color .2s; line-height: 1;
+}
+#add-btn:hover { opacity: 1; background: var(--fg); color: var(--cream); border-color: var(--fg); }
+/* Add memory modal */
+#memory-modal {
+  position: fixed; inset: 0; z-index: 500; display: none; align-items: center; justify-content: center;
+  background: rgba(34,22,8,.45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  padding: 24px;
+}
+#memory-modal.open { display: flex; }
+#memory-modal-inner {
+  background: var(--cream); border-radius: 4px; max-width: 520px; width: 100%;
+  padding: 36px 40px 32px; position: relative;
+  box-shadow: 0 32px 80px rgba(34,22,8,.28);
+  animation: modal-in .3s cubic-bezier(.2,.8,.4,1);
+}
+#memory-modal-close {
+  position: absolute; top: 16px; right: 18px; background: none; border: none;
+  font-size: 22px; cursor: pointer; color: var(--fg-soft); opacity: .6; line-height: 1;
+  transition: opacity .2s;
+}
+#memory-modal-close:hover { opacity: 1; }
+#memory-modal h2 {
+  font-family: var(--ff-d); font-style: italic; font-size: 22px; font-weight: 400;
+  color: var(--fg); margin-bottom: 24px;
+}
+.mem-label {
+  font-family: var(--ff-b); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--fg-soft); margin-bottom: 8px; display: block;
+}
+#memory-drop {
+  width: 100%; height: 140px; border: 1.5px dashed var(--parch); border-radius: 3px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  cursor: pointer; margin-bottom: 20px; background: var(--white); position: relative;
+  transition: border-color .2s;
+}
+#memory-drop:hover, #memory-drop.over { border-color: var(--terra); }
+#memory-drop-text { font-family: var(--ff-b); font-size: 13px; color: var(--fg-soft); pointer-events: none; }
+#memory-drop img { max-height: 120px; max-width: 100%; object-fit: contain; border-radius: 2px; }
+#memory-file { display: none; }
+#memory-caption {
+  width: 100%; font-family: var(--ff-b); font-size: 14px; line-height: 1.6;
+  color: var(--fg); background: var(--white); border: 1px solid var(--parch);
+  border-radius: 3px; padding: 10px 12px; resize: vertical; min-height: 80px;
+  outline: none; margin-bottom: 8px;
+  transition: border-color .2s;
+}
+#memory-caption:focus { border-color: var(--terra); }
+#memory-caption::placeholder { color: var(--fg-soft); }
+#memory-caption-label { margin-top: 4px; }
+#memory-submit {
+  margin-top: 20px; width: 100%; padding: 12px; background: var(--fg);
+  color: var(--cream); border: none; border-radius: 3px; font-family: var(--ff-b);
+  font-size: 11px; letter-spacing: .12em; text-transform: uppercase; cursor: pointer;
+  transition: opacity .2s;
+}
+#memory-submit:hover { opacity: .8; }
+/* User polaroids */
+.user-polaroid {
+  position: absolute; background: var(--white); padding: 8px 8px 60px;
+  box-shadow: 4px 6px 28px rgba(34,22,8,.13); cursor: pointer;
+  transform: rotate(var(--r, 0deg)); transition: transform .3s ease, box-shadow .3s ease;
+  animation: bob var(--dur, 7s) ease-in-out infinite var(--del, 0s); z-index: 10;
+  max-width: 200px;
+}
+.user-polaroid:hover {
+  transform: rotate(var(--r, 0deg)) scale(1.05) translateY(-6px);
+  box-shadow: 6px 14px 48px rgba(34,22,8,.22); z-index: 60;
+}
+.user-polaroid img { display: block; width: 180px; height: 140px; object-fit: cover; }
+.user-polaroid .pol-cap {
+  font-family: var(--ff-h); font-size: 13px; text-align: left; color: #4A3020;
+  position: absolute; bottom: 10px; left: 10px; right: 10px; line-height: 1.4;
+}
+/* View memory modal */
+#view-modal {
+  position: fixed; inset: 0; z-index: 500; display: none; align-items: center; justify-content: center;
+  background: rgba(34,22,8,.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  padding: 24px;
+}
+#view-modal.open { display: flex; }
+#view-modal-inner {
+  background: var(--cream); border-radius: 4px; max-width: 680px; width: 100%;
+  display: flex; gap: 32px; padding: 40px;
+  box-shadow: 0 32px 80px rgba(34,22,8,.28);
+  animation: modal-in .3s cubic-bezier(.2,.8,.4,1);
+}
+#view-modal-close {
+  position: absolute; top: 16px; right: 18px; background: none; border: none;
+  font-size: 22px; cursor: pointer; color: var(--fg-soft); opacity: .6;
+  transition: opacity .2s;
+}
+#view-modal-close:hover { opacity: 1; }
+#view-modal-img { flex-shrink: 0; width: 260px; height: 220px; object-fit: cover; border-radius: 2px; }
+#view-modal-right { flex: 1; display: flex; flex-direction: column; position: relative; }
+#view-modal-writeup {
+  font-family: var(--ff-b); font-size: 15px; line-height: 1.8; color: var(--fg-mid);
+  flex: 1; outline: none; white-space: pre-wrap;
+  border-bottom: 1px solid transparent; transition: border-color .2s;
+}
+#view-modal-writeup:focus { border-color: var(--parch); }
+#view-modal-hint {
+  font-family: var(--ff-b); font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--fg-soft); opacity: .45; margin-top: 12px;
+}
+#view-modal-delete {
+  margin-top: 16px; background: none; border: none; font-family: var(--ff-b);
+  font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--fg-soft);
+  opacity: .4; cursor: pointer; text-align: left; transition: opacity .2s, color .2s; padding: 0;
+}
+#view-modal-delete:hover { opacity: 1; color: var(--terra); }
 /* Book review modal */
 #book-modal {
   position: fixed; inset: 0; z-index: 500; display: none; align-items: center; justify-content: center;
@@ -254,9 +373,39 @@ body.drag { cursor: grabbing; }
     </div>
   </div>
   <span id="hint">drag to explore · scroll to zoom</span>
+  <button id="add-btn" title="Add a memory">+</button>
   <div id="zoom-controls">
     <button class="zoom-btn" id="zoom-out" aria-label="Zoom out">−</button>
     <button class="zoom-btn" id="zoom-in" aria-label="Zoom in">+</button>
+  </div>
+</div>
+
+<!-- Add memory modal -->
+<div id="memory-modal" role="dialog" aria-modal="true">
+  <div id="memory-modal-inner">
+    <button id="memory-modal-close" aria-label="Close">×</button>
+    <h2>add a memory</h2>
+    <span class="mem-label">photo</span>
+    <div id="memory-drop">
+      <input type="file" id="memory-file" accept="image/*">
+      <div id="memory-drop-text">click or drag a photo here</div>
+    </div>
+    <span class="mem-label mem-caption-label">write-up</span>
+    <textarea id="memory-caption" placeholder="what was this moment? where were you, how did it feel…" rows="4"></textarea>
+    <button id="memory-submit">Place on canvas</button>
+  </div>
+</div>
+
+<!-- View memory modal -->
+<div id="view-modal" role="dialog" aria-modal="true">
+  <div id="view-modal-inner">
+    <button id="view-modal-close" aria-label="Close">×</button>
+    <img id="view-modal-img" src="" alt="">
+    <div id="view-modal-right">
+      <div id="view-modal-writeup" contenteditable="true" spellcheck="false"></div>
+      <div id="view-modal-hint">click to edit</div>
+      <button id="view-modal-delete">remove from canvas</button>
+    </div>
   </div>
 </div>
 
@@ -555,6 +704,150 @@ const closeBook = () => {
   currentBookId = null;
 };
 
+// ── Memory system ──────────────────────────────────────────────
+const world2 = document.getElementById('world');
+const memModal = document.getElementById('memory-modal');
+const memDrop = document.getElementById('memory-drop');
+const memFile = document.getElementById('memory-file');
+const memCaption = document.getElementById('memory-caption');
+const memDropText = document.getElementById('memory-drop-text');
+let memDataUrl = null;
+
+const loadMemories = () => {
+  let mems = [];
+  try { mems = JSON.parse(localStorage.getItem('canvas_memories') || '[]'); } catch(e) {}
+  return mems;
+};
+const saveMemories = (mems) => {
+  try { localStorage.setItem('canvas_memories', JSON.stringify(mems)); } catch(e) {}
+};
+
+const renderMemory = (mem) => {
+  const el = document.createElement('div');
+  el.className = 'user-polaroid';
+  el.dataset.memId = mem.id;
+  el.style.cssText = `left:${mem.x}px;top:${mem.y}px;--r:${mem.r}deg;--dur:${mem.dur}s;--del:${mem.del}s;`;
+  el.innerHTML = `<img src="${mem.img}" alt=""><div class="pol-cap">${mem.caption}</div>`;
+  el.addEventListener('click', e => { e.stopPropagation(); openViewModal(mem.id); });
+  world2.appendChild(el);
+};
+
+const renderAll = () => {
+  document.querySelectorAll('.user-polaroid').forEach(e => e.remove());
+  loadMemories().forEach(renderMemory);
+};
+renderAll();
+
+// Add button → open modal
+document.getElementById('add-btn').addEventListener('click', () => {
+  memDataUrl = null;
+  memCaption.value = '';
+  memDropText.textContent = 'click or drag a photo here';
+  memDrop.innerHTML = '';
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.id = 'memory-file'; inp.accept = 'image/*'; inp.style.display = 'none';
+  memDrop.appendChild(inp);
+  const txt = document.createElement('div');
+  txt.id = 'memory-drop-text'; txt.textContent = 'click or drag a photo here';
+  memDrop.appendChild(txt);
+  inp.addEventListener('change', () => { if (inp.files[0]) loadFile(inp.files[0]); });
+  memModal.classList.add('open');
+});
+
+document.getElementById('memory-modal-close').addEventListener('click', () => memModal.classList.remove('open'));
+memModal.addEventListener('click', e => { if (e.target === memModal) memModal.classList.remove('open'); });
+
+memDrop.addEventListener('click', () => {
+  const inp = memDrop.querySelector('input[type=file]');
+  if (inp) inp.click();
+});
+memDrop.addEventListener('dragover', e => { e.preventDefault(); memDrop.classList.add('over'); });
+memDrop.addEventListener('dragleave', () => memDrop.classList.remove('over'));
+memDrop.addEventListener('drop', e => {
+  e.preventDefault(); memDrop.classList.remove('over');
+  if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
+});
+
+const loadFile = (file) => {
+  const reader = new FileReader();
+  reader.onload = ev => {
+    memDataUrl = ev.target.result;
+    memDrop.innerHTML = `<img src="${memDataUrl}" style="max-height:120px;max-width:100%;object-fit:contain;border-radius:2px;">`;
+  };
+  reader.readAsDataURL(file);
+};
+
+document.getElementById('memory-submit').addEventListener('click', () => {
+  if (!memDataUrl) return;
+  const caption = memCaption.value.trim() || '';
+  // Place in the current viewport center on the canvas
+  const cx = (-tx + innerWidth / 2) / scale;
+  const cy = (-ty + innerHeight / 2) / scale;
+  const mem = {
+    id: Date.now().toString(),
+    img: memDataUrl,
+    caption,
+    x: cx - 100 + (Math.random() - .5) * 120,
+    y: cy - 80 + (Math.random() - .5) * 80,
+    r: (Math.random() - .5) * 8,
+    dur: 6 + Math.random() * 3,
+    del: -(Math.random() * 5)
+  };
+  const mems = loadMemories();
+  mems.push(mem);
+  saveMemories(mems);
+  renderMemory(mem);
+  memModal.classList.remove('open');
+});
+
+// View memory modal
+const viewModal = document.getElementById('view-modal');
+const viewImg = document.getElementById('view-modal-img');
+const viewWriteup = document.getElementById('view-modal-writeup');
+let viewingId = null;
+
+const openViewModal = (id) => {
+  const mems = loadMemories();
+  const mem = mems.find(m => m.id === id);
+  if (!mem) return;
+  viewingId = id;
+  viewImg.src = mem.img;
+  viewWriteup.textContent = mem.writeup || mem.caption || '';
+  viewModal.classList.add('open');
+};
+
+const closeViewModal = () => {
+  if (viewingId) {
+    const mems = loadMemories();
+    const mem = mems.find(m => m.id === viewingId);
+    if (mem) { mem.writeup = viewWriteup.textContent.trim(); saveMemories(mems); }
+    const card = document.querySelector(`.user-polaroid[data-mem-id="${viewingId}"] .pol-cap`);
+    if (card) card.textContent = viewWriteup.textContent.trim() || '';
+  }
+  viewModal.classList.remove('open');
+  viewingId = null;
+};
+
+document.getElementById('view-modal-close').addEventListener('click', closeViewModal);
+viewModal.addEventListener('click', e => { if (e.target === viewModal) closeViewModal(); });
+
+document.getElementById('view-modal-delete').addEventListener('click', () => {
+  if (!viewingId) return;
+  const mems = loadMemories().filter(m => m.id !== viewingId);
+  saveMemories(mems);
+  document.querySelector(`.user-polaroid[data-mem-id="${viewingId}"]`)?.remove();
+  viewModal.classList.remove('open');
+  viewingId = null;
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeViewModal();
+    memModal.classList.remove('open');
+  }
+});
+
+// ── Book reviews ────────────────────────────────────────────────
 document.querySelectorAll('.book[data-book]').forEach(el => {
   el.addEventListener('click', e => {
     e.stopPropagation();
@@ -564,7 +857,6 @@ document.querySelectorAll('.book[data-book]').forEach(el => {
 
 document.getElementById('book-modal-close').addEventListener('click', closeBook);
 modal.addEventListener('click', e => { if (e.target === modal) closeBook(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeBook(); });
 </script>
 </body>
 </html>
