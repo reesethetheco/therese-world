@@ -86,6 +86,10 @@ body.drag { cursor: grabbing; }
   pointer-events: none;
 }
 .book-line { position: absolute; top: 28px; left: 18px; right: 12px; height: 1px; background: rgba(255,255,255,.25); }
+.book-img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center; display: block;
+}
 .book-title {
   font-family: var(--ff-d); font-size: 10.5px; font-weight: 400; line-height: 1.4;
   color: rgba(255,255,255,.96); position: relative; z-index: 2;
@@ -182,13 +186,16 @@ body.drag { cursor: grabbing; }
 }
 #book-modal-close:hover { opacity: 1; }
 #book-modal-cover {
-  width: 64px; height: 96px; border-radius: 1px 3px 3px 1px; margin-bottom: 20px;
-  box-shadow: -3px 2px 8px rgba(0,0,0,.28), 3px 4px 16px rgba(34,22,8,.12);
+  width: 80px; height: 120px; border-radius: 1px 3px 3px 1px; margin-bottom: 20px;
+  box-shadow: -4px 2px 10px rgba(0,0,0,.32), 4px 6px 20px rgba(34,22,8,.16);
   position: relative; overflow: hidden; flex-shrink: 0;
 }
 #book-modal-cover::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 10px;
-  background: linear-gradient(to right, rgba(0,0,0,.26), transparent);
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 12px;
+  background: linear-gradient(to right, rgba(0,0,0,.3), transparent); z-index: 2;
+}
+#book-modal-cover img {
+  width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;
 }
 #book-modal-title {
   font-family: var(--ff-d); font-size: 24px; font-weight: 400; font-style: italic;
@@ -317,9 +324,9 @@ body.drag { cursor: grabbing; }
 
 <!-- Books -->
 <div class="sec" style="left:200px;top:216px;">books</div>
-<div class="book" data-book="wbba" style="--r:-4deg;--dur:6s;--del:0s;--bob:-9px;left:214px;top:272px;"><div class="book-cover" style="--w:86px;--h:132px;background:linear-gradient(170deg,#E0E6EE,#8898AA);"><div class="book-line" style="background:rgba(20,40,60,.2);"></div><div class="book-title" style="color:#1A2A38;">When Breath Becomes Air</div><div class="book-author" style="color:rgba(26,42,56,.52);">Paul Kalanithi</div></div></div>
-<div class="book" data-book="wit" style="--r:5deg;--dur:7.5s;--del:-1.5s;--bob:-7px;left:348px;top:254px;"><div class="book-cover" style="--w:90px;--h:138px;background:linear-gradient(160deg,#1A1A2E,#16213E);"><div class="book-line"></div><div class="book-title">What It Takes</div><div class="book-author">Stephen Schwarzman</div></div></div>
-<div class="book" data-book="tus" style="--r:-2deg;--dur:6.5s;--del:-2.5s;--bob:-10px;left:482px;top:278px;"><div class="book-cover" style="--w:84px;--h:128px;background:linear-gradient(165deg,#C8956C,#7B4A2A);"><div class="book-line"></div><div class="book-title">The Untethered Soul</div><div class="book-author">Michael A. Singer</div></div></div>
+<div class="book" data-book="wbba" style="--r:-4deg;--dur:6s;--del:0s;--bob:-9px;left:214px;top:272px;"><div class="book-cover" style="--w:86px;--h:132px;background:linear-gradient(170deg,#E0E6EE,#8898AA);"><img class="book-img" src="https://covers.openlibrary.org/b/isbn/9780812988406-L.jpg" alt="When Breath Becomes Air cover" onerror="this.style.display='none'"></div></div>
+<div class="book" data-book="wit" style="--r:5deg;--dur:7.5s;--del:-1.5s;--bob:-7px;left:348px;top:254px;"><div class="book-cover" style="--w:90px;--h:138px;background:linear-gradient(160deg,#1A1A2E,#16213E);"><img class="book-img" src="https://covers.openlibrary.org/b/isbn/9781501158148-L.jpg" alt="What It Takes cover" onerror="this.style.display='none'"></div></div>
+<div class="book" data-book="tus" style="--r:-2deg;--dur:6.5s;--del:-2.5s;--bob:-10px;left:482px;top:278px;"><div class="book-cover" style="--w:84px;--h:128px;background:linear-gradient(165deg,#C8956C,#7B4A2A);"><img class="book-img" src="https://covers.openlibrary.org/b/isbn/9781572245372-L.jpg" alt="The Untethered Soul cover" onerror="this.style.display='none'"></div></div>
 
 <!-- Trips -->
 <div class="sec" style="left:1802px;top:1342px;">places</div>
@@ -449,18 +456,21 @@ const BOOKS = {
     title: 'When Breath Becomes Air',
     author: 'Paul Kalanithi',
     bg: 'linear-gradient(170deg,#E0E6EE,#8898AA)',
+    cover: 'https://covers.openlibrary.org/b/isbn/9780812988406-L.jpg',
     defaultReview: 'Add your thoughts on this book…'
   },
   wit: {
     title: 'What It Takes',
     author: 'Stephen Schwarzman',
     bg: 'linear-gradient(160deg,#1A1A2E,#16213E)',
+    cover: 'https://covers.openlibrary.org/b/isbn/9781501158148-L.jpg',
     defaultReview: 'Add your thoughts on this book…'
   },
   tus: {
     title: 'The Untethered Soul',
     author: 'Michael A. Singer',
     bg: 'linear-gradient(165deg,#C8956C,#7B4A2A)',
+    cover: 'https://covers.openlibrary.org/b/isbn/9781572245372-L.jpg',
     defaultReview: 'Add your thoughts on this book…'
   }
 };
@@ -476,6 +486,7 @@ const openBook = (id) => {
   const b = BOOKS[id]; if (!b) return;
   currentBookId = id;
   modalCover.style.background = b.bg;
+  modalCover.innerHTML = `<img src="${b.cover}" alt="${b.title} cover" onerror="this.style.display='none'">`;
   modalTitle.textContent = b.title;
   modalAuthor.textContent = b.author;
   let saved = '';
