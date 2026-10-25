@@ -429,6 +429,102 @@ body.drag { cursor: grabbing; }
   opacity: .7;
 }
 
+/* ── About card ──────────────────────────────────────── */
+.about-card {
+  position: absolute; background: var(--white); border-radius: 3px;
+  padding: 32px 36px 28px; width: 300px;
+  box-shadow: 3px 5px 28px rgba(34,22,8,.10);
+  animation: bob 9s ease-in-out infinite;
+}
+.about-card-hi {
+  font-family: var(--ff-d); font-style: italic; font-size: 26px;
+  color: var(--fg); line-height: 1.15; margin-bottom: 8px;
+}
+.about-card-bio {
+  font-family: var(--ff-b); font-size: 12.5px; line-height: 1.75;
+  color: var(--fg-mid);
+}
+.about-card-rule { width: 20px; height: 1px; background: var(--terra); margin: 14px 0; }
+.about-card-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.about-tag {
+  font-family: var(--ff-b); font-size: 9px; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--terra); opacity: .75;
+  border: 1px solid var(--terra); border-radius: 100px; padding: 3px 9px;
+}
+
+/* ── Paper card ───────────────────────────────────────── */
+.paper-card {
+  position: absolute; background: var(--white); border-radius: 3px;
+  padding: 24px 26px 20px; width: 240px;
+  box-shadow: 3px 5px 24px rgba(34,22,8,.09);
+  animation: bob var(--dur,8s) ease-in-out infinite var(--del,0s);
+  cursor: pointer; text-decoration: none; display: block;
+  transition: box-shadow .25s ease, transform .25s ease;
+}
+.paper-card:hover { box-shadow: 6px 14px 44px rgba(34,22,8,.18); transform: translateY(-4px); }
+.paper-card-label {
+  font-family: var(--ff-b); font-size: 8.5px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--terra); opacity: .7; margin-bottom: 10px;
+}
+.paper-card-title {
+  font-family: var(--ff-d); font-style: italic; font-size: 16px;
+  color: var(--fg); line-height: 1.35; margin-bottom: 8px;
+}
+.paper-card-meta {
+  font-family: var(--ff-b); font-size: 10.5px; color: var(--fg-soft); line-height: 1.5;
+}
+.paper-card-cta {
+  font-family: var(--ff-b); font-size: 9px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--terra); margin-top: 12px; opacity: .7;
+  display: flex; align-items: center; gap: 4px;
+}
+
+/* ── Work card ────────────────────────────────────────── */
+.work-card {
+  position: absolute; background: var(--white); border-radius: 3px;
+  padding: 26px 28px 22px; width: 230px;
+  box-shadow: 3px 5px 24px rgba(34,22,8,.09);
+  animation: bob var(--dur,8s) ease-in-out infinite var(--del,0s);
+  transition: box-shadow .25s ease, transform .25s ease;
+}
+.work-card:hover { box-shadow: 6px 14px 44px rgba(34,22,8,.17); transform: translateY(-4px) rotate(var(--r,0deg)); }
+.work-card-org {
+  font-family: var(--ff-b); font-size: 8.5px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--terra); opacity: .75; margin-bottom: 10px;
+}
+.work-card-role {
+  font-family: var(--ff-d); font-style: italic; font-size: 18px;
+  color: var(--fg); line-height: 1.2; margin-bottom: 6px;
+}
+.work-card-desc {
+  font-family: var(--ff-b); font-size: 11.5px; line-height: 1.65;
+  color: var(--fg-mid);
+}
+.work-card-rule { width: 18px; height: 1px; background: var(--terra); margin: 10px 0; }
+.work-card-link {
+  font-family: var(--ff-b); font-size: 9px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--terra); opacity: .7; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.work-card-link:hover { opacity: 1; }
+
+/* ── Interest card ───────────────────────────────────── */
+.interest-card {
+  position: absolute; background: var(--white); border-radius: 3px;
+  padding: 22px 24px 18px; width: 200px;
+  box-shadow: 3px 5px 24px rgba(34,22,8,.09);
+  animation: bob var(--dur,8s) ease-in-out infinite var(--del,0s);
+}
+.interest-card-icon { font-size: 26px; margin-bottom: 10px; display: block; }
+.interest-card-title {
+  font-family: var(--ff-d); font-style: italic; font-size: 18px;
+  color: var(--fg); line-height: 1.2; margin-bottom: 5px;
+}
+.interest-card-desc {
+  font-family: var(--ff-b); font-size: 11px; line-height: 1.6;
+  color: var(--fg-soft);
+}
+
 /* Add-chapter card */
 .life-add-card {
   position: absolute; background: transparent;
@@ -582,6 +678,8 @@ body.drag { cursor: grabbing; }
       <button class="pill" data-wx="900" data-wy="680">Writing</button>
       <button class="pill" data-wx="2800" data-wy="800">Wishlist</button>
       <button class="pill" data-wx="1400" data-wy="240">Resume</button>
+      <button class="pill" data-wx="2240" data-wy="340">Research</button>
+      <button class="pill" data-wx="900" data-wy="1500">Work</button>
       <button class="pill" data-wx="3500" data-wy="340">Life</button>
       <button class="pill" data-wx="1600" data-wy="1000">Home</button>
     </div>
@@ -666,6 +764,21 @@ body.drag { cursor: grabbing; }
 
 <div class="intro">
   <div class="intro-name">Therese</div>
+  <div class="intro-rule"></div>
+  <div class="intro-sub">statistics · economics · family business · NUS MBA</div>
+</div>
+
+<!-- About card -->
+<div class="about-card" style="left:1220px;top:880px;transform:rotate(-1.5deg);">
+  <div class="about-card-hi">Hi, I'm Therese 👋</div>
+  <div class="about-card-bio">I studied statistics and economics, then spent time in alternative assets, consulting for my family's businesses in education, transportation, and manufacturing — and now I'm doing my MBA at NUS.</div>
+  <div class="about-card-rule"></div>
+  <div class="about-card-tags">
+    <span class="about-tag">Statistics</span>
+    <span class="about-tag">Economics</span>
+    <span class="about-tag">Family Business</span>
+    <span class="about-tag">NUS MBA</span>
+  </div>
 </div>
 
 <!-- Doodles -->
@@ -789,6 +902,54 @@ body.drag { cursor: grabbing; }
 </div>
 </div>
 
+<!-- Research -->
+<div class="section-group" style="left:2100px;top:260px;">
+<div class="sec" style="left:0;top:0;">research</div>
+<a class="paper-card" href="https://ideas.repec.org/p/pra/mprapa/106025.html" target="_blank" rel="noopener" style="--dur:8.5s;--del:0s;left:0;top:40px;transform:rotate(-2deg);">
+  <div class="paper-card-label">Working Paper · 2021</div>
+  <div class="paper-card-title">Income, Consumption, and Poverty Measurement in the Philippines</div>
+  <div class="paper-card-meta">University of Munich · MPRA · Briones, Lopez, Elumbre, Angangco</div>
+  <div class="paper-card-cta">Read paper ↗</div>
+</a>
+</div>
+
+<!-- Work -->
+<div class="section-group" style="left:680px;top:1380px;">
+<div class="sec" style="left:0;top:0;">work</div>
+<div class="work-card" style="--r:-3deg;--dur:9s;--del:0s;left:0;top:44px;transform:rotate(-3deg);">
+  <div class="work-card-org">ATRAM Group</div>
+  <div class="work-card-role">Alternative Assets</div>
+  <div class="work-card-rule"></div>
+  <div class="work-card-desc">Worked in alternative investments and hosted a webinar on the asset class for investors.</div>
+</div>
+<div class="work-card" style="--r:3deg;--dur:8s;--del:-2s;left:264px;top:24px;transform:rotate(3deg);">
+  <div class="work-card-org">Family Business</div>
+  <div class="work-card-role">Consulting</div>
+  <div class="work-card-rule"></div>
+  <div class="work-card-desc">Succession planning, operations & strategy across education, transportation, and manufacturing.</div>
+</div>
+<div class="work-card" style="--r:-2deg;--dur:10s;--del:-4s;left:132px;top:300px;transform:rotate(-2deg);">
+  <div class="work-card-org">NUS Business School</div>
+  <div class="work-card-role">MBA</div>
+  <div class="work-card-rule"></div>
+  <div class="work-card-desc">Family Business Club. Focused on the intersection of governance, strategy, and ownership.</div>
+</div>
+</div>
+
+<!-- Interests -->
+<div class="section-group" style="left:2160px;top:1380px;">
+<div class="sec" style="left:0;top:0;">interests</div>
+<div class="interest-card" style="--dur:8s;--del:0s;left:0;top:44px;transform:rotate(-2.5deg);">
+  <span class="interest-card-icon">⛵</span>
+  <div class="interest-card-title">On the Water</div>
+  <div class="interest-card-desc">Happiest sailing, windsurfing, or swimming. Near the water is near enough.</div>
+</div>
+<div class="interest-card" style="--dur:9s;--del:-3s;left:230px;top:20px;transform:rotate(3deg);">
+  <span class="interest-card-icon">🍽️</span>
+  <div class="interest-card-title">Hosting Dinners</div>
+  <div class="interest-card-desc">Love bringing people together over a good meal.</div>
+</div>
+</div>
 
 
 </div>
