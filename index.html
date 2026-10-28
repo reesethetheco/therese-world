@@ -73,6 +73,9 @@ body.drag { cursor: grabbing; }
   will-change: transform;
   cursor: default;
 }
+.book, .life-card, .work-card, .paper-card, .about-card, .resume-card, .sticker { cursor: grab; }
+.book:active, .life-card:active, .work-card:active, .paper-card:active,
+.about-card:active, .resume-card:active, .sticker:active { cursor: grabbing; }
 .section-group:hover { transform: scale(1.07); z-index: 55; }
 .section-group .sec { position: absolute; }
 .book {
@@ -787,7 +790,7 @@ body.drag { cursor: grabbing; }
 </div>
 
 <!-- About card -->
-<div class="about-card" style="left:1220px;top:880px;transform:rotate(-1.5deg);">
+<div class="about-card" data-drag-id="about-main" style="left:1220px;top:880px;transform:rotate(-1.5deg);">
   <div class="about-card-hi">Hi, I'm Therese 👋</div>
   <div class="about-card-bio">I studied statistics and economics, then spent time in alternative assets, consulting for my family's businesses in education, transportation, and manufacturing — and now I'm doing my MBA at NUS.</div>
   <div class="about-card-rule"></div>
@@ -873,7 +876,7 @@ body.drag { cursor: grabbing; }
 <!-- Resume -->
 <div class="section-group" style="left:1280px;top:200px;">
 <div class="sec" style="left:0;top:0;">resume</div>
-<a class="resume-card" href="https://www.linkedin.com/in/thereseangangco/" target="_blank" rel="noopener" style="left:0;top:36px;position:absolute;">
+<a class="resume-card" data-drag-id="resume-main" href="https://www.linkedin.com/in/thereseangangco/" target="_blank" rel="noopener" style="left:0;top:36px;position:absolute;">
   <div class="resume-card-name">Therese Angangco</div>
   <div class="resume-card-role">Product · Strategy · Design</div>
   <div class="resume-card-rule"></div>
@@ -923,7 +926,7 @@ body.drag { cursor: grabbing; }
 <!-- Research -->
 <div class="section-group" style="left:2100px;top:260px;">
 <div class="sec" style="left:0;top:0;">research</div>
-<a class="paper-card" href="https://ideas.repec.org/p/pra/mprapa/106025.html" target="_blank" rel="noopener" style="--dur:8.5s;--del:0s;left:0;top:40px;transform:rotate(-2deg);">
+<a class="paper-card" data-drag-id="paper-poverty" href="https://ideas.repec.org/p/pra/mprapa/106025.html" target="_blank" rel="noopener" style="--dur:8.5s;--del:0s;left:0;top:40px;transform:rotate(-2deg);">
   <div class="paper-card-label">Working Paper · 2021</div>
   <div class="paper-card-title">Income, Consumption, and Poverty Measurement in the Philippines</div>
   <div class="paper-card-meta">University of Munich · MPRA · Briones, Lopez, Elumbre, Angangco</div>
@@ -934,19 +937,19 @@ body.drag { cursor: grabbing; }
 <!-- Work -->
 <div class="section-group" style="left:680px;top:1380px;">
 <div class="sec" style="left:0;top:0;">work</div>
-<div class="work-card" style="--r:-3deg;--dur:9s;--del:0s;left:0;top:44px;transform:rotate(-3deg);">
+<div class="work-card" data-drag-id="work-atram" style="--r:-3deg;--dur:9s;--del:0s;left:0;top:44px;transform:rotate(-3deg);">
   <div class="work-card-org">ATRAM Group</div>
   <div class="work-card-role">Alternative Assets</div>
   <div class="work-card-rule"></div>
   <div class="work-card-desc">Worked in alternative investments and hosted a webinar on the asset class for investors.</div>
 </div>
-<div class="work-card" style="--r:3deg;--dur:8s;--del:-2s;left:264px;top:24px;transform:rotate(3deg);">
+<div class="work-card" data-drag-id="work-consulting" style="--r:3deg;--dur:8s;--del:-2s;left:264px;top:24px;transform:rotate(3deg);">
   <div class="work-card-org">Family Business</div>
   <div class="work-card-role">Consulting</div>
   <div class="work-card-rule"></div>
   <div class="work-card-desc">Succession planning, operations & strategy across education, transportation, and manufacturing.</div>
 </div>
-<div class="work-card" style="--r:-2deg;--dur:10s;--del:-4s;left:132px;top:300px;transform:rotate(-2deg);">
+<div class="work-card" data-drag-id="work-mba" style="--r:-2deg;--dur:10s;--del:-4s;left:132px;top:300px;transform:rotate(-2deg);">
   <div class="work-card-org">NUS Business School</div>
   <div class="work-card-role">MBA</div>
   <div class="work-card-rule"></div>
@@ -1443,11 +1446,12 @@ const addBtn = () => {
 };
 
 const renderLifeCards = () => {
-  // Remove all existing cards and add button
   lifeGroup.querySelectorAll('.life-card, .life-add-card').forEach(el => el.remove());
   const chapters = getLifeChapters() || LIFE_DEFAULTS;
   chapters.forEach((ch, i) => lifeGroup.appendChild(buildLifeCard(ch, i)));
   lifeGroup.appendChild(addBtn());
+  // Re-apply saved drag positions for any life cards
+  if (typeof restoreCardPositions === 'function') restoreCardPositions();
 };
 
 renderLifeCards();
@@ -1520,6 +1524,123 @@ document.addEventListener('keydown', e => {
     if (newModal.classList.contains('open')) closeNewChapter();
   }
 });
+
+// ── Card dragging ─────────────────────────────────────
+const DRAG_CARDS = '.book,.life-card,.work-card,.paper-card,.sticker,.about-card,.resume-card';
+const CARD_POS_KEY = 'card_world_positions_v1';
+
+const getSavedPositions = () => { try { return JSON.parse(localStorage.getItem(CARD_POS_KEY)) || {}; } catch { return {}; } };
+const saveCardPos = (id, left, top) => {
+  const p = getSavedPositions(); p[id] = { left, top };
+  try { localStorage.setItem(CARD_POS_KEY, JSON.stringify(p)); } catch {}
+};
+
+const cardId = el =>
+  el.dataset.dragId ||
+  (el.dataset.book    && 'book-'    + el.dataset.book)    ||
+  (el.dataset.life    && 'life-'    + el.dataset.life)     ||
+  (el.dataset.sticker && 'sticker-' + el.dataset.sticker)  ||
+  null;
+
+const moveCardToWorld = (el, savedRect) => {
+  if (el.parentElement === world) return;
+  const r = savedRect || el.getBoundingClientRect();
+  world.appendChild(el);
+  el.style.position = 'absolute';
+  el.style.left = ((r.left - tx) / scale) + 'px';
+  el.style.top  = ((r.top  - ty) / scale) + 'px';
+};
+
+const restoreCardPositions = () => {
+  const saved = getSavedPositions();
+  for (const [id, pos] of Object.entries(saved)) {
+    let el = document.querySelector(`[data-drag-id="${id}"]`);
+    if (!el && id.startsWith('book-'))    el = document.querySelector(`[data-book="${id.slice(5)}"]`);
+    if (!el && id.startsWith('life-'))    el = document.querySelector(`[data-life="${id.slice(5)}"]`);
+    if (!el && id.startsWith('sticker-')) el = document.querySelector(`[data-sticker="${id.slice(8)}"]`);
+    if (!el) continue;
+    world.appendChild(el);
+    el.style.position = 'absolute';
+    el.style.left = pos.left + 'px';
+    el.style.top  = pos.top  + 'px';
+  }
+};
+restoreCardPositions();
+
+let cdEl = null, cdOX = 0, cdOY = 0, cdSX = 0, cdSY = 0, cdRect0 = null;
+let cdDragging = false, cdDetached = false;
+
+const cdStart = (el, cx, cy) => {
+  cdRect0 = el.getBoundingClientRect();
+  cdEl = el; cdSX = cx; cdSY = cy;
+  cdOX = (cx - cdRect0.left) / scale;
+  cdOY = (cy - cdRect0.top)  / scale;
+  cdDragging = false; cdDetached = false;
+};
+
+const cdMove = (cx, cy) => {
+  if (!cdEl) return;
+  if (!cdDragging && Math.hypot(cx - cdSX, cy - cdSY) < 5) return;
+  if (!cdDetached) {
+    moveCardToWorld(cdEl, cdRect0);
+    cdEl.style.zIndex = '300';
+    cdEl.style.transition = 'none';
+    document.body.style.cursor = 'grabbing';
+    cdDetached = true;
+  }
+  cdDragging = true;
+  cdEl.style.left = ((cx - tx) / scale - cdOX) + 'px';
+  cdEl.style.top  = ((cy - ty) / scale - cdOY) + 'px';
+};
+
+const cdEnd = () => {
+  if (!cdEl) return false;
+  const el = cdEl, dragged = cdDragging;
+  cdEl = null; cdDragging = false;
+  document.body.style.cursor = '';
+  if (dragged) {
+    el.style.zIndex = '';
+    setTimeout(() => { el.style.transition = ''; el.style.cursor = ''; }, 50);
+    const id = cardId(el);
+    if (id) saveCardPos(id, parseFloat(el.style.left), parseFloat(el.style.top));
+  }
+  return dragged;
+};
+
+// Mouse — capture phase so canvas pan doesn't fire
+document.addEventListener('mousedown', e => {
+  const card = e.target.closest(DRAG_CARDS);
+  if (!card || e.button !== 0) return;
+  e.stopPropagation();
+  cdStart(card, e.clientX, e.clientY);
+}, true);
+
+document.addEventListener('mousemove', e => { cdMove(e.clientX, e.clientY); });
+
+document.addEventListener('mouseup', () => {
+  if (cdEnd()) {
+    // suppress the click so book/life modals don't open after a drag
+    document.addEventListener('click', e => { e.stopPropagation(); e.preventDefault(); },
+      { capture: true, once: true });
+  }
+});
+
+// Touch
+document.addEventListener('touchstart', e => {
+  const card = e.target.closest(DRAG_CARDS);
+  if (!card) return;
+  const t = e.touches[0];
+  cdStart(card, t.clientX, t.clientY);
+}, { passive: true, capture: true });
+
+document.addEventListener('touchmove', e => {
+  if (!cdEl) return;
+  const t = e.touches[0];
+  cdMove(t.clientX, t.clientY);
+  if (cdDragging) e.preventDefault();
+}, { passive: false });
+
+document.addEventListener('touchend', () => { cdEnd(); });
 
 // ── Photo stickers ────────────────────────────────────
 const stickerKey = id => `sticker_photo_${id}`;
