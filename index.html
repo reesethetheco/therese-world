@@ -508,21 +508,39 @@ body.drag { cursor: grabbing; }
 }
 .work-card-link:hover { opacity: 1; }
 
-/* ── Interest card ───────────────────────────────────── */
-.interest-card {
-  position: absolute; background: var(--white); border-radius: 3px;
-  padding: 22px 24px 18px; width: 200px;
-  box-shadow: 3px 5px 24px rgba(34,22,8,.09);
+/* ── Photo sticker ───────────────────────────────────── */
+.sticker {
+  position: absolute; cursor: pointer; pointer-events: all;
   animation: bob var(--dur,8s) ease-in-out infinite var(--del,0s);
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1), box-shadow .25s ease;
+  display: inline-block;
 }
-.interest-card-icon { font-size: 26px; margin-bottom: 10px; display: block; }
-.interest-card-title {
-  font-family: var(--ff-d); font-style: italic; font-size: 18px;
-  color: var(--fg); line-height: 1.2; margin-bottom: 5px;
+.sticker:hover { transform: rotate(var(--r,0deg)) scale(1.06) translateY(-4px); }
+.sticker-frame {
+  display: block; width: 200px; height: 160px;
+  border: 10px solid var(--white); border-bottom-width: 10px;
+  box-shadow: 3px 6px 22px rgba(34,22,8,.18), 0 1px 3px rgba(34,22,8,.08);
+  overflow: hidden; background: var(--white);
+  transform: rotate(var(--r,0deg));
+  position: relative;
 }
-.interest-card-desc {
-  font-family: var(--ff-b); font-size: 11px; line-height: 1.6;
-  color: var(--fg-soft);
+.sticker-img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.sticker-svg {
+  width: 100%; height: 100%; display: block;
+}
+.sticker-upload-hint {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity .2s; background: rgba(255,255,255,.5);
+  font-family: var(--ff-b); font-size: 9px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--fg);
+}
+.sticker:hover .sticker-upload-hint { opacity: 1; }
+.sticker-label {
+  font-family: var(--ff-b); font-size: 10px; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--fg-soft); opacity: .6;
+  text-align: center; margin-top: 8px; transform: rotate(var(--r,0deg));
 }
 
 /* Add-chapter card */
@@ -939,16 +957,83 @@ body.drag { cursor: grabbing; }
 <!-- Interests -->
 <div class="section-group" style="left:2160px;top:1380px;">
 <div class="sec" style="left:0;top:0;">interests</div>
-<div class="interest-card" style="--dur:8s;--del:0s;left:0;top:44px;transform:rotate(-2.5deg);">
-  <span class="interest-card-icon">⛵</span>
-  <div class="interest-card-title">On the Water</div>
-  <div class="interest-card-desc">Happiest sailing, windsurfing, or swimming. Near the water is near enough.</div>
+
+<div class="sticker" data-sticker="sailing" style="--r:-4deg;--dur:8s;--del:0s;left:0;top:44px;">
+  <div class="sticker-frame" style="--r:-4deg;">
+    <img class="sticker-img" id="sticker-img-sailing" src="" alt="sailing" style="display:none;">
+    <svg class="sticker-svg" id="sticker-svg-sailing" viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#B8D8EE"/>
+          <stop offset="1" stop-color="#D8EEF8"/>
+        </linearGradient>
+        <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#4A90C4"/>
+          <stop offset="1" stop-color="#2A6A9A"/>
+        </linearGradient>
+      </defs>
+      <rect width="200" height="160" fill="url(#sky)"/>
+      <rect y="100" width="200" height="60" fill="url(#sea)"/>
+      <!-- Water ripples -->
+      <path d="M0 108 Q25 104 50 108 Q75 112 100 108 Q125 104 150 108 Q175 112 200 108" stroke="white" stroke-width="1" fill="none" opacity=".4"/>
+      <path d="M0 118 Q30 114 60 118 Q90 122 120 118 Q150 114 180 118 Q190 120 200 118" stroke="white" stroke-width="1" fill="none" opacity=".3"/>
+      <!-- Hull -->
+      <path d="M68 100 Q100 108 132 100 L126 94 L74 94 Z" fill="#C07850"/>
+      <!-- Mast -->
+      <line x1="100" y1="28" x2="100" y2="94" stroke="#8B6040" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Main sail -->
+      <path d="M100 30 L100 88 L58 88 Z" fill="white" opacity=".95"/>
+      <!-- Jib sail -->
+      <path d="M100 44 L100 88 L134 76 Z" fill="#F5EED8" opacity=".9"/>
+      <!-- Sun -->
+      <circle cx="162" cy="32" r="12" fill="#F4C842" opacity=".85"/>
+      <!-- Clouds -->
+      <ellipse cx="38" cy="24" rx="22" ry="9" fill="white" opacity=".75"/>
+      <ellipse cx="52" cy="20" rx="14" ry="7" fill="white" opacity=".7"/>
+    </svg>
+    <div class="sticker-upload-hint">tap to add photo</div>
+  </div>
+  <div class="sticker-label">on the water</div>
 </div>
-<div class="interest-card" style="--dur:9s;--del:-3s;left:230px;top:20px;transform:rotate(3deg);">
-  <span class="interest-card-icon">🍽️</span>
-  <div class="interest-card-title">Hosting Dinners</div>
-  <div class="interest-card-desc">Love bringing people together over a good meal.</div>
+
+<div class="sticker" data-sticker="dinner" style="--r:3.5deg;--dur:9s;--del:-3s;left:240px;top:16px;">
+  <div class="sticker-frame" style="--r:3.5deg;">
+    <img class="sticker-img" id="sticker-img-dinner" src="" alt="dinner" style="display:none;">
+    <svg class="sticker-svg" id="sticker-svg-dinner" viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="tablecloth" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#F5EED8"/>
+          <stop offset="1" stop-color="#EDE0C4"/>
+        </linearGradient>
+      </defs>
+      <rect width="200" height="160" fill="#2A1E14"/>
+      <!-- Table -->
+      <ellipse cx="100" cy="116" rx="84" ry="28" fill="url(#tablecloth)"/>
+      <rect x="16" y="104" width="168" height="12" fill="url(#tablecloth)"/>
+      <!-- Plates -->
+      <circle cx="68" cy="108" r="18" fill="#E8DCC8"/>
+      <circle cx="68" cy="108" r="14" fill="#F2E8D4"/>
+      <circle cx="132" cy="108" r="18" fill="#E8DCC8"/>
+      <circle cx="132" cy="108" r="14" fill="#F2E8D4"/>
+      <!-- Candles -->
+      <rect x="97" y="68" width="6" height="28" fill="#F5EED8"/>
+      <ellipse cx="100" cy="68" rx="3.5" ry="2" fill="#F5EED8"/>
+      <path d="M100 58 Q102 62 100 66 Q98 62 100 58Z" fill="#F4A020" opacity=".95"/>
+      <!-- Wine glasses -->
+      <path d="M50 88 Q50 100 54 104 L46 104 Q50 100 50 88Z" stroke="#A09080" stroke-width="1.5" fill="none"/>
+      <ellipse cx="50" cy="88" rx="7" ry="5" stroke="#A09080" stroke-width="1.5" fill="rgba(180,140,100,.3)"/>
+      <path d="M150 88 Q150 100 154 104 L146 104 Q150 100 150 88Z" stroke="#A09080" stroke-width="1.5" fill="none"/>
+      <ellipse cx="150" cy="88" rx="7" ry="5" stroke="#A09080" stroke-width="1.5" fill="rgba(180,140,100,.3)"/>
+      <!-- Flowers -->
+      <circle cx="100" cy="85" r="5" fill="#D4785A" opacity=".8"/>
+      <circle cx="92" cy="81" r="4" fill="#C8A870" opacity=".7"/>
+      <circle cx="108" cy="81" r="4" fill="#B87060" opacity=".7"/>
+    </svg>
+    <div class="sticker-upload-hint">tap to add photo</div>
+  </div>
+  <div class="sticker-label">hosting dinners</div>
 </div>
+
 </div>
 
 
@@ -972,7 +1057,7 @@ set();
 
 // Pan — mouse
 body.addEventListener('mousedown', e => {
-  if (e.target.closest('.pill,.zoom-btn,#book-modal,.life-card,.life-add-card,#life-modal,#life-new-modal')) return;
+  if (e.target.closest('.pill,.zoom-btn,#book-modal,.life-card,.life-add-card,.sticker,#life-modal,#life-new-modal')) return;
   on = true; mx = e.clientX; my = e.clientY; sx = tx; sy = ty;
   body.classList.add('drag');
 });
@@ -985,7 +1070,7 @@ document.addEventListener('mouseup', () => { on = false; body.classList.remove('
 // Pan — touch (single finger)
 let pinchDist0 = 0, pinchScale0 = 1, pinchTx0 = 0, pinchTy0 = 0;
 body.addEventListener('touchstart', e => {
-  if (e.target.closest('.pill,#book-modal,.life-card,.life-add-card,#life-modal,#life-new-modal')) return;
+  if (e.target.closest('.pill,#book-modal,.life-card,.life-add-card,.sticker,#life-modal,#life-new-modal')) return;
   if (e.touches.length === 2) {
     const a = e.touches[0], b = e.touches[1];
     pinchDist0 = Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
@@ -1434,6 +1519,48 @@ document.addEventListener('keydown', e => {
     if (lifeModal.classList.contains('open')) closeLife();
     if (newModal.classList.contains('open')) closeNewChapter();
   }
+});
+
+// ── Photo stickers ────────────────────────────────────
+const stickerKey = id => `sticker_photo_${id}`;
+
+const loadStickerPhoto = id => {
+  try {
+    const src = localStorage.getItem(stickerKey(id));
+    if (!src) return;
+    const img = document.getElementById(`sticker-img-${id}`);
+    const svg = document.getElementById(`sticker-svg-${id}`);
+    if (img && svg) { img.src = src; img.style.display = 'block'; svg.style.display = 'none'; }
+  } catch {}
+};
+
+document.querySelectorAll('.sticker').forEach(sticker => {
+  const id = sticker.dataset.sticker;
+  loadStickerPhoto(id);
+
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = 'image/*'; input.style.display = 'none';
+  document.body.appendChild(input);
+
+  sticker.addEventListener('click', e => {
+    e.stopPropagation();
+    input.click();
+  });
+
+  input.addEventListener('change', () => {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const src = ev.target.result;
+      try { localStorage.setItem(stickerKey(id), src); } catch {}
+      const img = document.getElementById(`sticker-img-${id}`);
+      const svg = document.getElementById(`sticker-svg-${id}`);
+      if (img && svg) { img.src = src; img.style.display = 'block'; svg.style.display = 'none'; }
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
+  });
 });
 </script>
 </body>
